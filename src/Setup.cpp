@@ -205,6 +205,7 @@ void GPIO_Setup()
   pinMode(GPIO_SPI_nCS, OUTPUT);
   pinMode(GPIO_SPI_SCK, OUTPUT);
   pinMode(GPIO_SPI_MOSI, OUTPUT_OPEN_DRAIN);
+  digitalWrite(GPIO_SPI_MOSI, HIGH);        // Port an (DIN)
  
 //******************************Versorgung und Ansteuerung Laser-Driver
   GpioExpanderIc91.pinMode(IO_EN_LASER_PWR_HI, OUTPUT);
@@ -253,6 +254,5 @@ DEBUG("GPIO_TRIGGER_OUT = " + (String)GPIO_TRIGGER_OUT);
   GpioExpanderIc91.digitalWrite(IO_EN_HEATER_PWR, LOW);
   GpioExpanderIc91.digitalWrite(IO_EN_TEC, LOW);
   
-  
-  GpioExpanderIc91.digitalWrite(IO_LED1_BU, LOW);
+  GpioExpanderIc91.digitalWrite(IO_LED1_PLUS, HIGH);
 }

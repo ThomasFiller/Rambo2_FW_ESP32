@@ -16,7 +16,10 @@ void setup()
   Serial.begin(38400);
   Serial1.begin(115200, 134217756U, P12, P14, false, 20000UL);
   EEPROM.begin(eepromSize);
-  DEBUG((String)"\nSketchname: " + (__FILE__) + "\nBuild: " + (__TIMESTAMP__) + "\n" );
+
+  delay(1000);
+
+  DEBUG((String)"\nSketchname: " + (__FILE__) + "\nBuild: " + (__TIMESTAMP__));
   DEBUG("System Clock: " + (String) ESP.getCpuFreqMHz() + " MHz");
   DEBUG("Running on core " + (String) xPortGetCoreID());
 
@@ -25,8 +28,8 @@ void setup()
  
   delay(30);
   TecDac.Configure();
-
   TecAdc.begin();
+
   TecAdc.WritConfigReg( ADS1015_REG_CONFIG_OS_BUSY |
                         ADS1015_REG_CONFIG_MUX_SINGLE_0|
                         ADS1015_REG_CONFIG_PGA_6_144V|
@@ -40,9 +43,16 @@ void setup()
   gstAvailableIchtp.uiWord = 0;
   
   for(uint8_t u8LasNo=0; u8LasNo < (NO_OF_LASERS + NO_OF_HEATERS); u8LasNo++)
-  {    
+  {
     if (LaserDriver[u8LasNo].Configure(I2C_LAS_ADDRESS[u8LasNo],I2C_LAS_CHANNEL[u8LasNo])==0) 
+    {
       gstAvailableIchtp.uiWord |= (uint16_t)((uint16_t)1<<(uint8_t)(u8LasNo));   
+//DEBUG("LaserDriver[" + (String)u8LasNo + "] ist vorhanden" );
+    }
+    else
+    {
+//DEBUG("LaserDriver[" + (String)u8LasNo + "] ist NICHT vorhanden" );
+    }
   }
   guiCurrentADChannel = 0;
 
@@ -58,7 +68,6 @@ void setup()
 
 
   InitExternTrigger(gucTriggerFunction);
-
 }
 
 void loop() 
@@ -216,6 +225,7 @@ delay(1);
                         {
                           if(FLAG_BLINK_LED_REQUIRED)//wird von Timer 4 ausgelöst
                           {
+//DEBUG("FLAG_BLINK_LED_REQUIRED");
                               FLAG_BLINK_LED_REQUIRED=(bool)0;
                               BlinkLed();
                           }
