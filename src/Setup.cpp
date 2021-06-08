@@ -249,10 +249,12 @@ DEBUG("GPIO_TRIGGER_OUT = " + (String)GPIO_TRIGGER_OUT);
   GpioExpanderIc94.begin();
   GpioExpanderIc91.begin();
 
-  GpioExpanderIc91.digitalWrite(IO_EN_LASER_PWR_HI, LOW);
-  GpioExpanderIc91.digitalWrite(IO_EN_LASER_PWR_LO, LOW);
-  GpioExpanderIc91.digitalWrite(IO_EN_HEATER_PWR, LOW);
-  GpioExpanderIc91.digitalWrite(IO_EN_TEC, LOW);
+  GpioExpanderIc91.digitalWriteExpander(IO_EN_LASER_PWR_HI, LOW);
+  GpioExpanderIc91.digitalWriteExpander(IO_EN_LASER_PWR_LO, LOW);
+  GpioExpanderIc91.digitalWriteExpander(IO_EN_HEATER_PWR, LOW);
+  GpioExpanderIc91.digitalWriteExpander(IO_EN_TEC, LOW);
   
-  GpioExpanderIc91.digitalWrite(IO_LED1_PLUS, HIGH);
+  GpioExpanderIc91.digitalWriteExpander(IO_LED1_PLUS, HIGH);
+
+//digitalWrite(GPIO_TRIGGER_OUT, LOW);        //Set Off
 }

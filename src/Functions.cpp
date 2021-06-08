@@ -8,20 +8,28 @@ uint8_t BaseReg0x10[5]   =   {0x90, 0x90, 0xB0, 0xD0, 0xF0};
 void IRAM_ATTR TriggerInput(void)
 {
 static bool bLaserOn;  
-  if((gucTriggerFunction & 0x07)==3) //state triggered
+/*  if((gucTriggerFunction & 0x07)==3) //state triggered
   {
     if (digitalRead(GPIO_TRIGGER_IN)) bLaserOn = true; else bLaserOn= false;
   }
   digitalWrite(GPIO_TRIGGER_OUT, bLaserOn); 
   bLaserOn = !bLaserOn;  
+*/
 }
 
 void InitExternTrigger(uint8_t u8TriggerFunction)
 {
+DEBUG("gucTriggerFunction= "  + (String)gucTriggerFunction);
   if(gucTriggerFunction & 0x08) //Pullup einschalten?
-    GpioExpanderIc91.digitalWrite(IO_TRIGGER_nPULLUP, LOW);
+  {
+    GpioExpanderIc91.digitalWriteExpander(IO_TRIGGER_nPULLUP, LOW);
+digitalWrite(GPIO_TRIGGER_OUT, LOW); 
+  }
   else 
-    GpioExpanderIc91.digitalWrite(IO_TRIGGER_nPULLUP, HIGH);
+  {
+    GpioExpanderIc91.digitalWriteExpander(IO_TRIGGER_nPULLUP, HIGH);
+digitalWrite(GPIO_TRIGGER_OUT, HIGH); 
+  }
 
   if(!(gucTriggerFunction & 0x07))//Interner Trigger?
   {
@@ -69,7 +77,7 @@ void CycleTimer_Task(void * pvParameters)
  static unsigned char ucCntBlinkLed=0;
   while(true)
   {
-    if (ucCntBlinkLed++ > 100) {FLAG_BLINK_LED_REQUIRED = (bool)1; ucCntBlinkLed=0;}
+    if (ucCntBlinkLed++ > 8) {FLAG_BLINK_LED_REQUIRED = (bool)1; ucCntBlinkLed=0;}
     FLAG_READ_ADC_AND_SWITCH_REQUIRED = (bool)1;
     vTaskDelay(10);
   }
@@ -83,15 +91,22 @@ void CycleTimer_Task(void * pvParameters)
 void SetLaserMode(uint8_t u8Laser, uint8_t u8LaserMode)
 {
   gucEnLas[u8Laser]=u8LaserMode;
+  uint8_t u8PullEnLas;
+  uint8_t u8Prg0Las;
+  if(ValBit(u8LaserMode, 0)) u8PullEnLas=HIGH; else u8PullEnLas=LOW;
+  if(ValBit(u8LaserMode, 1)) u8Prg0Las=HIGH; else u8Prg0Las=LOW;
+
   if(IC94 == IC_LAS[u8Laser])
   {
-    GpioExpanderIc94.digitalWrite(IO_PULL_EN_LAS[u8Laser], ValBit(u8LaserMode, 0));
-    GpioExpanderIc94.digitalWrite(IO_PRG0_LAS   [u8Laser], ValBit(u8LaserMode, 1));
+DEBUG("IC94 SetLaserMode(" + (String)u8Laser + ", " + (String)u8LaserMode + "); u8PullEnLas=" + (String)u8PullEnLas + "; u8Prg0Las=" +(String)u8Prg0Las+ "; uIO_PULL_EN_LAS[u8Laser]="+ (String)IO_PULL_EN_LAS[u8Laser]+ "; IO_PRG0_LAS[u8Laser]="+ (String)IO_PRG0_LAS[u8Laser]);
+    GpioExpanderIc94.digitalWriteExpander(IO_PULL_EN_LAS[u8Laser], u8PullEnLas);
+    GpioExpanderIc94.digitalWriteExpander(IO_PRG0_LAS   [u8Laser], u8Prg0Las);
   }
   else
   {
-    GpioExpanderIc91.digitalWrite(IO_PULL_EN_LAS[u8Laser], ValBit(u8LaserMode, 0));
-    GpioExpanderIc91.digitalWrite(IO_PRG0_LAS   [u8Laser], ValBit(u8LaserMode, 1));
+DEBUG("IC91 SetLaserMode(" + (String)u8Laser + ", " + (String)u8LaserMode + "); u8PullEnLas=" + (String)u8PullEnLas + "; u8Prg0Las=" +(String)u8Prg0Las+ "; uIO_PULL_EN_LAS[u8Laser]="+ (String)IO_PULL_EN_LAS[u8Laser]+ "; IO_PRG0_LAS[u8Laser]="+ (String)IO_PRG0_LAS[u8Laser]);
+    GpioExpanderIc91.digitalWriteExpander(IO_PULL_EN_LAS[u8Laser], u8PullEnLas);
+    GpioExpanderIc91.digitalWriteExpander(IO_PRG0_LAS   [u8Laser], u8Prg0Las);
   }
 }
 

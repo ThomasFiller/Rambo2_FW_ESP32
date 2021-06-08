@@ -29,6 +29,7 @@
 #define PCF8575_h
 
 #include "Wire.h"
+//#include "globalconsts.h"
 
 #if ARDUINO >= 100
 #include "Arduino.h"
@@ -37,7 +38,7 @@
 #endif
 
 // Uncomment to enable printing out nice debug messages.
-// #define PCF8575_DEBUG
+#define PCF8575_DEBUG
 
 // Uncomment for low memory usage this prevent use of complex DigitalInput structure and free 7byte of memory
 // #define PCF8575_LOW_MEMORY
@@ -47,8 +48,10 @@
 
 // Setup debug printing macros.
 #ifdef PCF8575_DEBUG
-	#define DEBUG_PRINT(...) { DEBUG_PRINTER.print(__VA_ARGS__); }
-	#define DEBUG_PRINTLN(...) { DEBUG_PRINTER.println(__VA_ARGS__); }
+	#define DEBUG_PRINT(...) {Serial1.printf("Funktion: %s meldet in Zeile: %d -> ", __PRETTY_FUNCTION__, __LINE__); Serial1.print(__VA_ARGS__)	;}
+	//#define DEBUG_PRINTLN(...) {Serial1.printf("Funktion: %s meldet in Zeile: %d -> ", __PRETTY_FUNCTION__, __LINE__); Serial1.println(__VA_ARGS__);}
+	//#define DEBUG_PRINT(...) {Serial1.printf("Funktion: %s meldet in Zeile: %d -> ", __PRETTY_FUNCTION__, __LINE__); Serial1.print(__VA_ARGS__)	;}
+	#define DEBUG_PRINTLN(...) {Serial1.println(__VA_ARGS__);}
 #else
 	#define DEBUG_PRINT(...) {}
 	#define DEBUG_PRINTLN(...) {}
@@ -135,7 +138,7 @@ public:
 	#else
 		uint16_t digitalReadAll(void);
 	#endif
-	void digitalWrite(uint8_t pin, uint8_t value);
+	void digitalWriteExpander(uint8_t pin, uint8_t value);
 
 private:
 	uint8_t _address;

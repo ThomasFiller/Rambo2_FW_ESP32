@@ -172,20 +172,20 @@ void PCF8575::begin(){
 
 	// Check if there are pins to set low
 	if (writeMode>0 || readMode>0){
-		DEBUG_PRINTLN("Set write mode");
+//		DEBUG_PRINTLN("Set write mode");
 		_wire->beginTransmission(_address);
-		DEBUG_PRINT(" ");
-		DEBUG_PRINT("usedPin pin ");
+//		DEBUG_PRINT(" ");
+//		DEBUG_PRINT("usedPin pin ");
 
 
 		uint16_t usedPin = writeMode | readMode;
-		DEBUG_PRINTLN( ~usedPin, BIN);
+//		DEBUG_PRINTLN( ~usedPin, BIN);
 //		Serial.println( ~usedPin, BIN);
 
 		_wire->write((uint8_t) ~usedPin);
 		_wire->write((uint8_t) (~(usedPin >> 8)));
 
-		DEBUG_PRINTLN("Start end trasmission if stop here check pullup resistor.");
+//		DEBUG_PRINTLN("Start end trasmission if stop here check pullup resistor.");
 		_wire->endTransmission();
 	}
 
@@ -212,10 +212,7 @@ void PCF8575::SwitchToI2cChan() //Schaltet auf einen der 3 I2C-Kan�le durch Mu
  * @param mode: mode, supported only INPUT or OUTPUT (to semplify)
  */
 void PCF8575::pinMode(uint8_t pin, uint8_t mode){
-	DEBUG_PRINT("Set pin ");
-	DEBUG_PRINT(pin);
-	DEBUG_PRINT(" as ");
-	DEBUG_PRINTLN(mode);
+	DEBUG_PRINTLN("Set pin " + (String)pin + " as " + (String)mode);
 
 	if (mode == OUTPUT){
 		writeMode = writeMode | bit(pin);
@@ -236,8 +233,8 @@ void PCF8575::pinMode(uint8_t pin, uint8_t mode){
 	else{
 		DEBUG_PRINTLN("Mode non supported by PCF8575")
 	}
-	DEBUG_PRINT("Write mode: ");
-	DEBUG_PRINTLN(writeMode, BIN);
+//	DEBUG_PRINT("Write mode: ");
+//	DEBUG_PRINTLN(writeMode, BIN);
 
 };
 
@@ -246,6 +243,7 @@ void PCF8575::pinMode(uint8_t pin, uint8_t mode){
  * @param force
  */
 void PCF8575::readBuffer(bool force){
+	SwitchToI2cChan();
 	if (millis() > PCF8575::lastReadMillis+READ_ELAPSED_TIME || _usingInterrupt || force){
 		_wire->requestFrom(_address,(uint8_t)2);// Begin transmission to PCF8575 with the buttons
 		lastReadMillis = millis();
@@ -267,6 +265,7 @@ void PCF8575::readBuffer(bool force){
 	 * @return
 	 */
 	PCF8575::DigitalInput PCF8575::digitalReadAll(void){
+		SwitchToI2cChan();
 		DEBUG_PRINTLN("Read from buffer");
 		_wire->requestFrom(_address,(uint8_t)2);// Begin transmission to PCF8575 with the buttons
 		lastReadMillis = millis();
@@ -363,6 +362,7 @@ void PCF8575::readBuffer(bool force){
  */
 uint8_t PCF8575::digitalRead(uint8_t pin)
 {
+	SwitchToI2cChan();
 	uint8_t value = LOW;
 	if ((bit(pin) & writeMode)>0){
 		if ((bit(pin) & writeByteBuffered)>0){
@@ -423,8 +423,9 @@ uint8_t PCF8575::digitalRead(uint8_t pin)
  * @param pin
  * @param value
  */
-void PCF8575::digitalWrite(uint8_t pin, uint8_t value){
-	DEBUG_PRINTLN("Begin trasmission");
+void PCF8575::digitalWriteExpander(uint8_t pin, uint8_t value){
+//	DEBUG_PRINTLN("Begin trasmission");
+//	SwitchToI2cChan();
 	_wire->beginTransmission(_address);     //Begin the transmission to PCF8575
 	if (value==HIGH){
 		writeByteBuffered = writeByteBuffered | bit(pin);
@@ -432,7 +433,7 @@ void PCF8575::digitalWrite(uint8_t pin, uint8_t value){
 		writeByteBuffered = writeByteBuffered & ~bit(pin);
 	}
 //	DEBUG_PRINT("Write data ");
-//	DEBUG_PRINT(writeByteBuffered, BIN);
+//	DEBUG_PRINTLN(writeByteBuffered, BIN);
 //	DEBUG_PRINT(" for pin ");
 //	DEBUG_PRINT(pin);
 //	DEBUG_PRINT(" bin value ");
@@ -448,7 +449,7 @@ void PCF8575::digitalWrite(uint8_t pin, uint8_t value){
 	writeByteBuffered = writeByteBuffered & writeMode;
 	_wire->write((uint8_t) writeByteBuffered);
 	_wire->write((uint8_t) (writeByteBuffered >> 8));
-	DEBUG_PRINTLN("Start end trasmission if stop here check pullup resistor.");
+//	DEBUG_PRINTLN("Start end trasmission if stop here check pullup resistor.");
 
 	_wire->endTransmission();
 };

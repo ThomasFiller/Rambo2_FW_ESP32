@@ -268,7 +268,7 @@ TEC-CTL.SchDoc (zweiter TEC-Controller für SHG)
 #define GPIO_SWITCH 36
 
 //******************************Trigger-Ausgang synchron zu internem Generator bzw. -Eingang zur externen Triggerung
-#define GPIO_TRIGGER_OUT      0//35 geht nicht, da Input only //gleicher Pin wie GPIO_PULSE
+#define GPIO_TRIGGER_OUT      13//0//35 geht nicht, da Input only //gleicher Pin wie GPIO_PULSE
 #define GPIO_TRIGGER_IN       39
 #define IO_TRIGGER_nPULLUP  P15
 
@@ -280,8 +280,8 @@ TEC-CTL.SchDoc (zweiter TEC-Controller für SHG)
 #define IO_EN_LASER_PWR_LO P4
 
   //IC94
-#define IO_PULL_EN_LAS0  P8//Pull up oder pull down der Laserausgänge
-#define IO_PULL_EN_LAS1  P9
+#define IO_PULL_EN_LAS0  P9//Pull up oder pull down der Laserausgänge
+#define IO_PULL_EN_LAS1  P8
 #define IO_PULL_EN_LAS2  P10
 #define IO_PULL_EN_LAS3  P11
 #define IO_PULL_EN_LAS4  P12
@@ -295,8 +295,8 @@ TEC-CTL.SchDoc (zweiter TEC-Controller für SHG)
 #define IO_PULL_EN_LAS11  P8
 
   //IC94
-#define IO_PRG0_LAS0  P0
-#define IO_PRG0_LAS1  P1
+#define IO_PRG0_LAS0  P1//P0
+#define IO_PRG0_LAS1  P0//P1
 #define IO_PRG0_LAS2  P2
 #define IO_PRG0_LAS3  P3
 #define IO_PRG0_LAS4  P4
@@ -313,8 +313,8 @@ TEC-CTL.SchDoc (zweiter TEC-Controller für SHG)
 #define IC91 1
 
   //IC94
-#define IC_LAS0  IC94 //GPIO-Expander-IC, über welchen der Enable-Pin des Lasers programmiert wird
-#define IC_LAS1  IC94 //GPIO-Expander-IC, über welchen der Enable-Pin des Lasers programmiert wird
+#define IC_LAS0  IC91 //GPIO-Expander-IC, über welchen der Enable-Pin des Lasers programmiert wird
+#define IC_LAS1  IC91 //GPIO-Expander-IC, über welchen der Enable-Pin des Lasers programmiert wird
 #define IC_LAS2  IC94
 #define IC_LAS3  IC94
 #define IC_LAS4  IC94

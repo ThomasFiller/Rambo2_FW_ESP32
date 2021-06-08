@@ -9,14 +9,15 @@
 
 void LedColor(uint8_t u8Color)
 {
-  if (LED_RED   == u8Color)   GpioExpanderIc91.digitalWrite(IO_LED1_PLUS , HIGH); else GpioExpanderIc91.digitalWrite(IO_LED1_PLUS , LOW);
-  if (LED_GREEN == u8Color)   GpioExpanderIc91.digitalWrite(IO_LED1_MINUS, HIGH); else GpioExpanderIc91.digitalWrite(IO_LED1_MINUS, LOW);
+//DEBUG_F("LedColor(" + (String) u8Color + ")");
+  if (LED_RED   == u8Color)   GpioExpanderIc91.digitalWriteExpander(IO_LED1_PLUS , HIGH); else GpioExpanderIc91.digitalWriteExpander(IO_LED1_PLUS , LOW);
+  if (LED_GREEN == u8Color)   GpioExpanderIc91.digitalWriteExpander(IO_LED1_MINUS, HIGH); else GpioExpanderIc91.digitalWriteExpander(IO_LED1_MINUS, LOW);
 }
 
 void BlinkLed()
 {
   static unsigned char ucCntFlash = 9;
-//DEBUG_F("BlinkLed");
+//DEBUG_F("BlinkLed; gucDeviceState=" + (String)gucDeviceState);
   switch(gucDeviceState)
     {
       case STATE_OVERTEMP:
@@ -38,7 +39,7 @@ void BlinkLed()
         }
         else
         {
-          LedColor(LED_OFF);//RGB(FALSE,FALSE,FALSE);
+//          LedColor(LED_OFF);//RGB(FALSE,FALSE,FALSE);
         }
         break;
       case STATE_HEATING:
@@ -78,10 +79,10 @@ void Click(void)
 	gucDeviceState = STATE_OFF;
 	gucDeviceStateShadow = gucDeviceState;
 
-  GpioExpanderIc91.digitalWrite(IO_EN_LASER_PWR_HI, LOW);   //Laser ausschalten
-  GpioExpanderIc91.digitalWrite(IO_EN_LASER_PWR_LO, LOW);   //Laser ausschalten
-  GpioExpanderIc91.digitalWrite(IO_EN_HEATER_PWR, LOW);     //Heizwiderstand ausschalten
-  GpioExpanderIc91.digitalWrite(IO_EN_TEC, LOW);            //Peltier-Element ausschalten
+  GpioExpanderIc91.digitalWriteExpander(IO_EN_LASER_PWR_HI, LOW);   //Laser ausschalten
+  GpioExpanderIc91.digitalWriteExpander(IO_EN_LASER_PWR_LO, LOW);   //Laser ausschalten
+  GpioExpanderIc91.digitalWriteExpander(IO_EN_HEATER_PWR, LOW);     //Heizwiderstand ausschalten
+  GpioExpanderIc91.digitalWriteExpander(IO_EN_TEC, LOW);            //Peltier-Element ausschalten
 }
 
 void DoubleClick(void)
@@ -96,32 +97,32 @@ void Click3sec()
     case STATE_OVERTEMP:
       gucDeviceState = STATE_HEATING;
       gucDeviceStateShadow = gucDeviceState;
-      GpioExpanderIc91.digitalWrite(IO_EN_TEC, HIGH);//Peltier-Element einschalten
+      GpioExpanderIc91.digitalWriteExpander(IO_EN_TEC, HIGH);//Peltier-Element einschalten
       break;
     case STATE_OFF:
       gucDeviceState = STATE_HEATING;
       gucDeviceStateShadow = gucDeviceState;
-      GpioExpanderIc91.digitalWrite(IO_EN_TEC, HIGH);//Peltier-Element einschalten
+      GpioExpanderIc91.digitalWriteExpander(IO_EN_TEC, HIGH);//Peltier-Element einschalten
       break;
     case STATE_HEATING:
       gucDeviceState = STATE_OFF;
       gucDeviceStateShadow = gucDeviceState;
-      GpioExpanderIc91.digitalWrite(IO_EN_TEC, LOW); //Peltier-Element ausschalten
+      GpioExpanderIc91.digitalWriteExpander(IO_EN_TEC, LOW); //Peltier-Element ausschalten
       break;
     case STATE_READY:
       gucDeviceState = STATE_ON;
       gucDeviceStateShadow = gucDeviceState;
-      GpioExpanderIc91.digitalWrite(IO_EN_LASER_PWR_HI, HIGH);   //Laser einschalten
-      GpioExpanderIc91.digitalWrite(IO_EN_LASER_PWR_LO, HIGH);   //Laser einschalten
-      GpioExpanderIc91.digitalWrite(IO_EN_HEATER_PWR, HIGH);     //Heizwiderstand einschalten
+      GpioExpanderIc91.digitalWriteExpander(IO_EN_LASER_PWR_HI, HIGH);   //Laser einschalten
+      GpioExpanderIc91.digitalWriteExpander(IO_EN_LASER_PWR_LO, HIGH);   //Laser einschalten
+      GpioExpanderIc91.digitalWriteExpander(IO_EN_HEATER_PWR, HIGH);     //Heizwiderstand einschalten
       break;
     case STATE_ON:
       gucDeviceState = STATE_OFF;
       gucDeviceStateShadow = gucDeviceState;
-      GpioExpanderIc91.digitalWrite(IO_EN_LASER_PWR_HI, LOW);   //Laser ausschalten
-      GpioExpanderIc91.digitalWrite(IO_EN_LASER_PWR_LO, LOW);   //Laser ausschalten
-      GpioExpanderIc91.digitalWrite(IO_EN_HEATER_PWR, LOW);     //Heizwiderstand ausschalten
-      GpioExpanderIc91.digitalWrite(IO_EN_TEC, LOW);            //Peltier-Element ausschalten
+      GpioExpanderIc91.digitalWriteExpander(IO_EN_LASER_PWR_HI, LOW);   //Laser ausschalten
+      GpioExpanderIc91.digitalWriteExpander(IO_EN_LASER_PWR_LO, LOW);   //Laser ausschalten
+      GpioExpanderIc91.digitalWriteExpander(IO_EN_HEATER_PWR, LOW);     //Heizwiderstand ausschalten
+      GpioExpanderIc91.digitalWriteExpander(IO_EN_TEC, LOW);            //Peltier-Element ausschalten
       break;
     default:
       gucDeviceState = STATE_OFF;

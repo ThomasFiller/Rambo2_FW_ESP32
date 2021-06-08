@@ -320,9 +320,9 @@ unsigned char pucStringToSend[10];
                   
   //Lasertreiber			//			
     case UART_EN_LAS_HEAT_PWR://Spannungsregler f�r die Versorgung der Laserstromquellen und Heizwiderst�nde eigeschaltet? (0-aus; 1-an)
-      GpioExpanderIc91.digitalWrite(IO_EN_LASER_PWR_HI,pucData[0]);
-      GpioExpanderIc91.digitalWrite(IO_EN_LASER_PWR_LO,pucData[0]);
-      GpioExpanderIc91.digitalWrite(IO_EN_HEATER_PWR,pucData[0]);
+      GpioExpanderIc91.digitalWriteExpander(IO_EN_LASER_PWR_HI,pucData[0]);
+      GpioExpanderIc91.digitalWriteExpander(IO_EN_LASER_PWR_LO,pucData[0]);
+      GpioExpanderIc91.digitalWriteExpander(IO_EN_HEATER_PWR,pucData[0]);
       if(1==pucData[0])
       {
         bPwrSourcesJustEnabled = (bool)1;
@@ -397,16 +397,16 @@ unsigned char pucStringToSend[10];
     case UART_EN_TEC://Peltier-Element ein- oder ausschalten
       if(pucData[0]==1) 
       {
-        GpioExpanderIc91.digitalWrite(IO_EN_TEC, HIGH);//Peltier-Element einschalten
+        GpioExpanderIc91.digitalWriteExpander(IO_EN_TEC, HIGH);//Peltier-Element einschalten
         gucDeviceState = STATE_HEATING; 
         gucDeviceStateShadow = gucDeviceState;
       }
       else 
       {
-        GpioExpanderIc91.digitalWrite(IO_EN_LASER_PWR_HI, LOW);//Laser ausschalten
-        GpioExpanderIc91.digitalWrite(IO_EN_LASER_PWR_LO, LOW);//Laser ausschalten
-        GpioExpanderIc91.digitalWrite(IO_EN_HEATER_PWR, LOW);//Heizwiderstand ausschalten
-        GpioExpanderIc91.digitalWrite(IO_EN_TEC, LOW);//Peltier-Element ausschalten
+        GpioExpanderIc91.digitalWriteExpander(IO_EN_LASER_PWR_HI, LOW);//Laser ausschalten
+        GpioExpanderIc91.digitalWriteExpander(IO_EN_LASER_PWR_LO, LOW);//Laser ausschalten
+        GpioExpanderIc91.digitalWriteExpander(IO_EN_HEATER_PWR, LOW);//Heizwiderstand ausschalten
+        GpioExpanderIc91.digitalWriteExpander(IO_EN_TEC, LOW);//Peltier-Element ausschalten
         gucDeviceState = STATE_OFF;
         gucDeviceStateShadow = gucDeviceState;
       }

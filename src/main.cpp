@@ -44,6 +44,7 @@ void setup()
   
   for(uint8_t u8LasNo=0; u8LasNo < (NO_OF_LASERS + NO_OF_HEATERS); u8LasNo++)
   {
+gstAvailableIchtp.uiWord |= (uint16_t)((uint16_t)1<<(uint8_t)(u8LasNo)); 
     if (LaserDriver[u8LasNo].Configure(I2C_LAS_ADDRESS[u8LasNo],I2C_LAS_CHANNEL[u8LasNo])==0) 
     {
       gstAvailableIchtp.uiWord |= (uint16_t)((uint16_t)1<<(uint8_t)(u8LasNo));   
@@ -157,7 +158,7 @@ delay(1);
                       if(FLAG_CHANGE_TRIGGER_FUNCTION_REQUIRED)
                       {
                         FLAG_CHANGE_TRIGGER_FUNCTION_REQUIRED=(bool)0;
-                        digitalWrite(GPIO_TRIGGER_OUT, LOW);        //Set Off
+//                        digitalWrite(GPIO_TRIGGER_OUT, LOW);        //Set Off
                         InitExternTrigger(gucTriggerFunction);
                       }
                       else
@@ -181,10 +182,10 @@ delay(1);
                                 {
                                   gucDeviceState = STATE_OVERTEMP;
                                   gucDeviceStateShadow = gucDeviceState;
-                                  GpioExpanderIc91.digitalWrite(IO_EN_LASER_PWR_HI, LOW);   //Laser ausschalten
-                                  GpioExpanderIc91.digitalWrite(IO_EN_LASER_PWR_LO, LOW);   //Laser ausschalten
-                                  GpioExpanderIc91.digitalWrite(IO_EN_HEATER_PWR, LOW);     //Heizwiderstand ausschalten
-                                  GpioExpanderIc91.digitalWrite(IO_EN_TEC, LOW);            //Peltier-Element ausschalten
+                                  GpioExpanderIc91.digitalWriteExpander(IO_EN_LASER_PWR_HI, LOW);   //Laser ausschalten
+                                  GpioExpanderIc91.digitalWriteExpander(IO_EN_LASER_PWR_LO, LOW);   //Laser ausschalten
+                                  GpioExpanderIc91.digitalWriteExpander(IO_EN_HEATER_PWR, LOW);     //Heizwiderstand ausschalten
+                                  GpioExpanderIc91.digitalWriteExpander(IO_EN_TEC, LOW);            //Peltier-Element ausschalten
                                 }
                                 else
                                 {
