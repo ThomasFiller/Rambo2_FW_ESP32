@@ -229,7 +229,7 @@ TEC-CTL.SchDoc (zweiter TEC-Controller für SHG)
 
 /////////////////////////////////////////////////////////------------------GPIO--------------------PORTS///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define GPIO_TEST_PIN 13
+//#define GPIO_TEST_PIN 0
 
 //*******************************I2C-Port
 #define GPIO_I2C_SDA        21
@@ -253,7 +253,7 @@ TEC-CTL.SchDoc (zweiter TEC-Controller für SHG)
 #define GPIO_SPI_ADC_MOSI    23
 #define GPIO_SPI_ADC_MISO    19
 
-#define GPIO_SPI_DAC_nCS     2//34 geht nicht, da Input only
+#define GPIO_SPI_DAC_nCS     13//34 geht nicht, da Input only
 #define GPIO_SPI_DAC_SCK     26
 #define GPIO_SPI_DAC_MOSI    27
 
@@ -268,7 +268,7 @@ TEC-CTL.SchDoc (zweiter TEC-Controller für SHG)
 #define GPIO_SWITCH 36
 
 //******************************Trigger-Ausgang synchron zu internem Generator bzw. -Eingang zur externen Triggerung
-#define GPIO_TRIGGER_OUT      13//0//35 geht nicht, da Input only //gleicher Pin wie GPIO_PULSE
+#define GPIO_TRIGGER_OUT      15//0//35 geht nicht, da Input only //gleicher Pin wie GPIO_PULSE
 #define GPIO_TRIGGER_IN       39
 #define IO_TRIGGER_nPULLUP  P15
 

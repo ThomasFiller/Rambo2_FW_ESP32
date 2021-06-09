@@ -212,7 +212,7 @@ void PCF8575::SwitchToI2cChan() //Schaltet auf einen der 3 I2C-Kan�le durch Mu
  * @param mode: mode, supported only INPUT or OUTPUT (to semplify)
  */
 void PCF8575::pinMode(uint8_t pin, uint8_t mode){
-	DEBUG_PRINTLN("Set pin " + (String)pin + " as " + (String)mode);
+//	DEBUG_PRINTLN("Set pin " + (String)pin + " as " + (String)mode);
 
 	if (mode == OUTPUT){
 		writeMode = writeMode | bit(pin);
@@ -432,14 +432,14 @@ void PCF8575::digitalWriteExpander(uint8_t pin, uint8_t value){
 	}else{
 		writeByteBuffered = writeByteBuffered & ~bit(pin);
 	}
-//	DEBUG_PRINT("Write data ");
-//	DEBUG_PRINTLN(writeByteBuffered, BIN);
-//	DEBUG_PRINT(" for pin ");
-//	DEBUG_PRINT(pin);
-//	DEBUG_PRINT(" bin value ");
-//	DEBUG_PRINT(bit(pin), BIN);
-//	DEBUG_PRINT(" value ");
-//	DEBUG_PRINTLN(value);
+	DEBUG_PRINT("Write data ");
+	DEBUG_PRINTLN(writeByteBuffered, BIN);
+	//DEBUG_PRINT(" for pin ");
+	//DEBUG_PRINT(pin);
+	//DEBUG_PRINT(" bin value ");
+	//DEBUG_PRINT(bit(pin), BIN);
+	//DEBUG_PRINT(" value ");
+	//DEBUG_PRINTLN(value);
 
 //	Serial.print(" --> ");
 //	Serial.println(writeByteBuffered);

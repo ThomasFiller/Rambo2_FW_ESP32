@@ -44,7 +44,7 @@ void setup()
   
   for(uint8_t u8LasNo=0; u8LasNo < (NO_OF_LASERS + NO_OF_HEATERS); u8LasNo++)
   {
-gstAvailableIchtp.uiWord |= (uint16_t)((uint16_t)1<<(uint8_t)(u8LasNo)); 
+//gstAvailableIchtp.uiWord |= (uint16_t)((uint16_t)1<<(uint8_t)(u8LasNo)); 
     if (LaserDriver[u8LasNo].Configure(I2C_LAS_ADDRESS[u8LasNo],I2C_LAS_CHANNEL[u8LasNo])==0) 
     {
       gstAvailableIchtp.uiWord |= (uint16_t)((uint16_t)1<<(uint8_t)(u8LasNo));   
@@ -228,7 +228,7 @@ delay(1);
                           {
 //DEBUG("FLAG_BLINK_LED_REQUIRED");
                               FLAG_BLINK_LED_REQUIRED=(bool)0;
-                              BlinkLed();
+                    //          BlinkLed();
                           }
                           else
                           {
@@ -248,9 +248,10 @@ delay(1);
                                 uint8_t u8LasNo = LASER_OF_DCO[gu8DcoToSet];
                                 if((gstAvailableIchtp.uiWord & ((uint16_t)((uint16_t)1<<(uint8_t)(u8LasNo)))) > 0)//Nur, wenn der iC-HTP am I2C-Bus angeschlossen ist
                                 {
-                                  LaserDriver[u8LasNo].WriteReg(0x1C, 0x02, 0x00);//2. Write MODE(1:0) = "10" register (addr. 0x1C) to enable the configuration mode.
-                                  LaserDriver[u8LasNo].WriteReg(0x1B, gu8Dco[gu8DcoToSet], 0x00);// 
-                                  LaserDriver[u8LasNo].WriteReg(0x1C, 0x01, 0x00);//7. Write MODE(1:0) = "01" register (addr. 0x1C) to apply the configuration and enable the memory integrity check. In this mode configuration registers can only be read (except MODE(1:0) register, which is always accessible).(S.40)
+//DEBUG("FLAG_SET_DCO_REQUIRED; setzt LaserDriver[" + (String)u8LasNo + "] auf " + (String)gu8Dco[gu8DcoToSet]);
+                                  LaserDriver[u8LasNo].WriteReg(0x1C, 0x02);//2. Write MODE(1:0) = "10" register (addr. 0x1C) to enable the configuration mode.
+                                  LaserDriver[u8LasNo].WriteReg(0x1B, gu8Dco[gu8DcoToSet]);// 
+                                  LaserDriver[u8LasNo].WriteReg(0x1C, 0x01);//7. Write MODE(1:0) = "01" register (addr. 0x1C) to apply the configuration and enable the memory integrity check. In this mode configuration registers can only be read (except MODE(1:0) register, which is always accessible).(S.40)
                                 }
                                 if(bSetAllDco)
                                 {

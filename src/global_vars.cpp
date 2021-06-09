@@ -60,9 +60,9 @@ typUnsignedWord	gstTecTemperature;
 typUnsignedWord	gstTecVoltage;
 
 typUnsignedWord gstAvailableIchtp;
-typUnsignedWord	gstDAC[4];
+typUnsignedWord	gstDAC[NO_OF_DACS];
 typUnsignedWord	gstIlas[NO_OF_LASERS + NO_OF_HEATERS + NO_OF_300mALASERS];
-uint8_t gucEnLas[NO_OF_LASERS];
+uint8_t gucEnLas[NO_OF_LASERS + NO_OF_300mALASERS + NO_OF_HEATERS];
 typUnsignedWord gstBoardTemperature;
 typUnsignedWord gstBoardHumidity;
 typUnsignedWord	gstAdcValue[NO_OF_LASERS + NO_OF_HEATERS][5];

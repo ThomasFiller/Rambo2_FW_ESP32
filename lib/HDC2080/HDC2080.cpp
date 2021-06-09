@@ -47,7 +47,7 @@ void HDC2080::SwitchToI2cChan() //Schaltet auf einen der 3 I2C-Kan�le durch Mu
 void HDC2080::ReadTempAndHum(uint16_t *pu16Temperature, uint16_t *pu16Humidity)//ReadTempAndHumSensor
 {
 	typUnsignedWord stTemperature, stHumidity;
-	openReg(TEMP_LOW);
+/*	openReg(TEMP_LOW);
 	uint8_t reading; 					// holds byte of read data
 	Wire.requestFrom(_addr, 4); 		// Request 1 byte from open register
 	if (Wire.available() == 0){
@@ -61,6 +61,20 @@ void HDC2080::ReadTempAndHum(uint16_t *pu16Temperature, uint16_t *pu16Humidity)/
 		stHumidity.stBytes.ucHighByte   	= Wire.read();
 	}
 	triggerMeasurement();
+*/
+/*stTemperature.stBytes.ucLowByte 	= readReg(TEMP_LOW);
+stTemperature.stBytes.ucHighByte	= readReg(TEMP_HIGH);
+stHumidity.stBytes.ucLowByte    	= readReg(HUMID_LOW);
+stHumidity.stBytes.ucHighByte   	= readReg(HUMID_HIGH);
+*/
+
+	openReg(TEMP_LOW);
+	Wire.requestFrom(_addr, 4); 		// Request 1 byte from open register
+	stTemperature.stBytes.ucLowByte 	= Wire.read();
+	stTemperature.stBytes.ucHighByte	= Wire.read();
+	stHumidity.stBytes.ucLowByte    	= Wire.read();
+	stHumidity.stBytes.ucHighByte   	= Wire.read();
+
 	*pu16Temperature = stTemperature.uiWord;
 	*pu16Humidity    = stHumidity.uiWord;
 }

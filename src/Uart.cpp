@@ -69,7 +69,7 @@ uint8_t datalen = pucSendString[1];
 
 void ReplyData(unsigned char ucCmd)//DataDirection == 1
 {
-unsigned char pucStringToSend[120]; 
+unsigned char pucStringToSend[200]; 
   //pucStringToSend[0] = gucMyUartAddress + 0x80;//1. Byte: Address of Board
   pucStringToSend[0] = DEFAULT_UART_ADDRESS_TRANSMIT + 0x80;//1. Byte: Address of Board
   pucStringToSend[2] = ucCmd;
@@ -215,6 +215,9 @@ unsigned char pucStringToSend[120];
       pucStringToSend[1] = 6;//1. Byte: Length of frame (5 bei einem Datenbyte; 6 bei 2 Datenbytes)
       pucStringToSend[3]= gstIlas[ucCmd & 0x0F].stBytes.ucHighByte;//3. Byte -> 1.Datenbyte
       pucStringToSend[4]= gstIlas[ucCmd & 0x0F].stBytes.ucLowByte;//4. Byte -> 2.Datenbyte
+
+//DEBUG("ReplyData; gstIlas[" + (String)(ucCmd & 0x0F) + "]= " + (String)gstIlas[ucCmd & 0x0F].uiWord);
+
       break;
 
     case UART_EN_LAS0://Wann ist Laser0 an: 0-immer aus; 1-bei Triggersignal an; 2-bei invertiertem Triggersignal an; FF-immer an

@@ -8,38 +8,36 @@ uint8_t BaseReg0x10[5]   =   {0x90, 0x90, 0xB0, 0xD0, 0xF0};
 void IRAM_ATTR TriggerInput(void)
 {
 static bool bLaserOn;  
-/*  if((gucTriggerFunction & 0x07)==3) //state triggered
+  if((gucTriggerFunction & 0x07)==3) //state triggered
   {
     if (digitalRead(GPIO_TRIGGER_IN)) bLaserOn = true; else bLaserOn= false;
   }
   digitalWrite(GPIO_TRIGGER_OUT, bLaserOn); 
   bLaserOn = !bLaserOn;  
-*/
+
 }
 
 void InitExternTrigger(uint8_t u8TriggerFunction)
 {
-DEBUG("gucTriggerFunction= "  + (String)gucTriggerFunction);
+//DEBUG("gucTriggerFunction= "  + (String)gucTriggerFunction);
   if(gucTriggerFunction & 0x08) //Pullup einschalten?
   {
     GpioExpanderIc91.digitalWriteExpander(IO_TRIGGER_nPULLUP, LOW);
-digitalWrite(GPIO_TRIGGER_OUT, LOW); 
   }
   else 
   {
     GpioExpanderIc91.digitalWriteExpander(IO_TRIGGER_nPULLUP, HIGH);
-digitalWrite(GPIO_TRIGGER_OUT, HIGH); 
   }
 
   if(!(gucTriggerFunction & 0x07))//Interner Trigger?
   {
     double dFrequency = (double) gstInternalTriggerFrequency.uiWord;
     if(dFrequency > 1)    
-      ledcSetup(0, dFrequency, 8); 
+      ledcSetup(GPIO_TRIGGER_OUT, dFrequency, 8); 
     else 
-      ledcSetup(0, 100, 8);//100Hz
+      ledcSetup(GPIO_TRIGGER_OUT, 100, 8);//100Hz
 
-    ledcAttachPin(GPIO_TRIGGER_OUT, 0);
+    ledcAttachPin(GPIO_TRIGGER_OUT, GPIO_TRIGGER_OUT);
     ledcWrite(GPIO_TRIGGER_OUT, 127);//PWM-Output für internen Trigger
     //delay(100);
 //DEBUG("gstInternalTriggerFrequency HighByte= " + (String)gstInternalTriggerFrequency.stBytes.ucHighByte + "; LowByte= " + (String)gstInternalTriggerFrequency.stBytes.ucLowByte + "; word=" + (String)gstInternalTriggerFrequency.uiWord + "; dFrequency= " + (String)dFrequency);
@@ -162,7 +160,7 @@ void SetLaserDriver()
       uint8_t u8RegAddr;
       uint8_t u8Reg0x1E, u81stLaserToSet, u82ndLaserToSet, u8Crng1, u8Crng2;
 
-        LaserDriver[gucLaserToSet].WriteReg(0x1C, 0x02, 0x00);//2. Write MODE(1:0) = "10" register (addr. 0x1C) to enable the configuration mode.
+        LaserDriver[gucLaserToSet].WriteReg(0x1C, 0x02);//2. Write MODE(1:0) = "10" register (addr. 0x1C) to enable the configuration mode.
         //uint8_t u8RegAddr = 0x13 + ((gucLaserToSet & 0x01) * 5);//Geradzahlige Laser werden auf Register 0x13, ungeradzahlige auf Register 0x18 programmiert;
         if ((gucLaserToSet & 0x01) || (gucLaserToSet>(NO_OF_LASERS-1)))//richtigen Kanal w�hlen; bei Heaters ist Kanal immer u8RegAddr=0x13
         {//ungeradzahlig
@@ -183,9 +181,9 @@ void SetLaserDriver()
         u8Reg0x1E = REG_0x1E_OFFSET | (u8Crng2<<4) | u8Crng1;
         
         //LaserDriver[gucLaserToSet].WriteReg(u8RegAddr, (REFREG_OFFSET | stDriverValue.stBytes.ucHighByte) , stDriverValue.stBytes.ucLowByte);//Laserstrom �ber Referenzspannung einstellen; siehe Tabelle 36 auf Seite 20   
-        LaserDriver[gucLaserToSet].WriteReg(u8RegAddr, (REFREG_OFFSET | (gstIlas[gucLaserToSet].stBytes.ucHighByte & 0x03)) , gstIlas[gucLaserToSet].stBytes.ucLowByte);//Laserstrom �ber Referenzspannung einstellen; siehe Tabelle 36 auf Seite 20   
-        LaserDriver[gucLaserToSet].WriteReg(0x1E, u8Reg0x1E, 0x00);//Laser Current Range einstellen   
-        LaserDriver[gucLaserToSet].WriteReg(0x1C, 0x01, 0x00);//7. Write MODE(1:0) = "01" register (addr. 0x1C) to apply the configuration and enable the memory integrity check. In this mode configuration registers can only be read (except MODE(1:0) register, which is always accessible).(S.40)
+        LaserDriver[gucLaserToSet].WriteRegTwoBytes(u8RegAddr, (REFREG_OFFSET | (gstIlas[gucLaserToSet].stBytes.ucHighByte & 0x03)) , gstIlas[gucLaserToSet].stBytes.ucLowByte);//Laserstrom �ber Referenzspannung einstellen; siehe Tabelle 36 auf Seite 20   
+        LaserDriver[gucLaserToSet].WriteReg(0x1E, u8Reg0x1E);//Laser Current Range einstellen   
+        LaserDriver[gucLaserToSet].WriteReg(0x1C, 0x01);//7. Write MODE(1:0) = "01" register (addr. 0x1C) to apply the configuration and enable the memory integrity check. In this mode configuration registers can only be read (except MODE(1:0) register, which is always accessible).(S.40)
     }
     else //AD-Treiber 300mA am SPI
     {
@@ -290,11 +288,11 @@ void ReadAndConfigureAdc(uint8_t u8ConfigurationActualMeasurement, uint8_t u8Con
       SaveAdcDataOfOneChannel(u8ConfigurationActualMeasurement, u8Cnt);//Laser1
   
       //N�chste AD-Wandlung vorbereiten:
-      LaserDriver[u8Cnt].WriteReg(0x1C, 0x02, 0x00);//2. Write MODE(1:0) = "10" register (addr. 0x1C) to enable the configuration mode.
-      LaserDriver[u8Cnt].WriteReg(0x1A, Reg0x1A[u8ConfigurationNextMeasurement],0);//CMES
-      LaserDriver[u8Cnt].WriteReg(0x10, BaseReg0x10[u8ConfigurationNextMeasurement] + 0x07,0);//ADCC1
-      LaserDriver[u8Cnt].WriteReg(0x15, BaseReg0x10[u8ConfigurationNextMeasurement] + OFFSET_REG0x15[u8Cnt],0);//ADCC2
-      LaserDriver[u8Cnt].WriteReg(0x1C, 0x01, 0x00);//7. Write MODE(1:0) = "01" register (addr. 0x1C) to apply the configuration and enable the memory integrity check. In this mode configuration registers can only be read (except MODE(1:0) register, which is always accessible).(S.40)
+      LaserDriver[u8Cnt].WriteReg(0x1C, 0x02);//2. Write MODE(1:0) = "10" register (addr. 0x1C) to enable the configuration mode.
+      LaserDriver[u8Cnt].WriteReg(0x1A, Reg0x1A[u8ConfigurationNextMeasurement]);//CMES
+      LaserDriver[u8Cnt].WriteReg(0x10, BaseReg0x10[u8ConfigurationNextMeasurement] + 0x07);//ADCC1
+      LaserDriver[u8Cnt].WriteReg(0x15, BaseReg0x10[u8ConfigurationNextMeasurement] + OFFSET_REG0x15[u8Cnt]);//ADCC2
+      LaserDriver[u8Cnt].WriteReg(0x1C, 0x01);//7. Write MODE(1:0) = "01" register (addr. 0x1C) to apply the configuration and enable the memory integrity check. In this mode configuration registers can only be read (except MODE(1:0) register, which is always accessible).(S.40)
     }
   }
 }

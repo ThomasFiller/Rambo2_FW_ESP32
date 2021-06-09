@@ -123,11 +123,12 @@ void ReadSetupFromEeprom()//Parameter aus EEPROM einlesen
     {
       gucEnLas[ucCnt] = 0xFF;//Enabele-Pins aller HeaterDriver sind immer an
     }
+  //DEBUG("ReadSetupFromEeprom; gstIlas[" + (String)ucCnt + "]= " + (String)gstIlas[ucCnt].uiWord);
   }
 
   gstInternalTriggerFrequency.stBytes.ucHighByte = EEPROM.read(eeucIntTrigFreqHighByte[gucSetupNo]);
   gstInternalTriggerFrequency.stBytes.ucLowByte  = EEPROM.read(eeucIntTrigFreqLowByte[gucSetupNo]);
-  DEBUG(" Von EEPROM gelesen: gstInternalTriggerFrequency.stBytes.ucHighByte= " + (String) gstInternalTriggerFrequency.stBytes.ucHighByte + "; gstInternalTriggerFrequency.stBytes.ucLowByte= " + (String) gstInternalTriggerFrequency.stBytes.ucLowByte + "; gucSetupNo= " +gucSetupNo);
+//  DEBUG(" Von EEPROM gelesen: gstInternalTriggerFrequency.stBytes.ucHighByte= " + (String) gstInternalTriggerFrequency.stBytes.ucHighByte + "; gstInternalTriggerFrequency.stBytes.ucLowByte= " + (String) gstInternalTriggerFrequency.stBytes.ucLowByte + "; gucSetupNo= " +gucSetupNo);
 
   gucTriggerFunction    = EEPROM.read(eeucTriggerFunction[gucSetupNo]);
   //gucMyUartAddress      = eeucMyUartAddress;
@@ -164,6 +165,7 @@ void SaveSetupToEeprom(void)//EEPROM - Parameterablage
     EEPROM.write(eeucIlasLowByte[ucCnt][gucSetupNo]        , gstIlas[ucCnt].stBytes.ucLowByte);
     EEPROM.write(eeucIlasHighByte[ucCnt][gucSetupNo]       , gstIlas[ucCnt].stBytes.ucHighByte); 
     if (ucCnt < NO_OF_LASERS) EEPROM.write(eeucEnLas[ucCnt][gucSetupNo] , gucEnLas[ucCnt]); 
+  DEBUG("SaveSetupToEeprom; gstIlas[" + (String)ucCnt + "]= " + (String)gstIlas[ucCnt].uiWord);
   }
 
   EEPROM.write(eeucIntTrigFreqLowByte[gucSetupNo]    ,   gstInternalTriggerFrequency.stBytes.ucLowByte);
@@ -172,11 +174,6 @@ void SaveSetupToEeprom(void)//EEPROM - Parameterablage
 
   EEPROM.commit();
 DEBUG("SaveSetupToEeprom; gstInternalTriggerFrequency= " + (String) gstInternalTriggerFrequency.uiWord + "; gstInternalTriggerFrequency.stBytes.ucHighByte= " + gstInternalTriggerFrequency.stBytes.ucHighByte+ "; gstInternalTriggerFrequency.stBytes.ucLowByte= " + gstInternalTriggerFrequency.stBytes.ucLowByte);
-uint8_t LOESCH_Hi, LOESCH_Lo;
-LOESCH_Hi = EEPROM.read(eeucIntTrigFreqHighByte[gucSetupNo]);
-LOESCH_Lo  = EEPROM.read(eeucIntTrigFreqLowByte[gucSetupNo]);
-DEBUG("LOESCH_Hi= " + (String) LOESCH_Hi + "; LOESCH_Lo= " + (String) LOESCH_Lo + "; gucSetupNo= " +gucSetupNo);
-
 }
 
 /**
@@ -186,7 +183,7 @@ DEBUG("LOESCH_Hi= " + (String) LOESCH_Hi + "; LOESCH_Lo= " + (String) LOESCH_Lo 
   */
 void GPIO_Setup()
 {
-  pinMode(GPIO_TEST_PIN, OUTPUT);
+  //pinMode(GPIO_TEST_PIN, OUTPUT);
   //digitalWrite(GPIO_TEST_PIN, HIGH);
 
 //******************************i2c
@@ -232,7 +229,7 @@ void GPIO_Setup()
   pinMode(GPIO_SWITCH, INPUT_PULLUP);
   
 //******************************Trigger-Ausgang synchron zu internem Generator bzw. -Eingang zur externen Triggerung
-DEBUG("GPIO_TRIGGER_OUT = " + (String)GPIO_TRIGGER_OUT);
+//DEBUG("GPIO_TRIGGER_OUT = " + (String)GPIO_TRIGGER_OUT);
   pinMode(GPIO_TRIGGER_OUT, OUTPUT);
   pinMode(GPIO_TRIGGER_IN, INPUT);
   GpioExpanderIc91.pinMode(IO_TRIGGER_nPULLUP, OUTPUT);
