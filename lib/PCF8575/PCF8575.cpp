@@ -423,35 +423,38 @@ uint8_t PCF8575::digitalRead(uint8_t pin)
  * @param pin
  * @param value
  */
-void PCF8575::digitalWriteExpander(uint8_t pin, uint8_t value){
-//	DEBUG_PRINTLN("Begin trasmission");
-//	SwitchToI2cChan();
-	_wire->beginTransmission(_address);     //Begin the transmission to PCF8575
+void PCF8575::digitalWriteExpander(uint8_t pin, uint8_t value)
+{
+	ModifyBuffer(pin, value);
+	SendBufferToI2c();
+};
+
+void PCF8575::ModifyBuffer(uint8_t pin, uint8_t value)
+{
 	if (value==HIGH){
 		writeByteBuffered = writeByteBuffered | bit(pin);
 	}else{
 		writeByteBuffered = writeByteBuffered & ~bit(pin);
 	}
-	DEBUG_PRINT("Write data ");
-	DEBUG_PRINTLN(writeByteBuffered, BIN);
+	//DEBUG_PRINT("Write data ");
+	//DEBUG_PRINTLN(writeByteBuffered, BIN);
 	//DEBUG_PRINT(" for pin ");
 	//DEBUG_PRINT(pin);
 	//DEBUG_PRINT(" bin value ");
 	//DEBUG_PRINT(bit(pin), BIN);
 	//DEBUG_PRINT(" value ");
 	//DEBUG_PRINTLN(value);
-
-//	Serial.print(" --> ");
-//	Serial.println(writeByteBuffered);
-//	Serial.println((uint8_t) writeByteBuffered);
-//	Serial.println((uint8_t) (writeByteBuffered >> 8));
-
 	writeByteBuffered = writeByteBuffered & writeMode;
+}
+
+void PCF8575::SendBufferToI2c()
+{
+	SwitchToI2cChan();
+	_wire->beginTransmission(_address);     //Begin the transmission to PCF8575
 	_wire->write((uint8_t) writeByteBuffered);
 	_wire->write((uint8_t) (writeByteBuffered >> 8));
-//	DEBUG_PRINTLN("Start end trasmission if stop here check pullup resistor.");
-
 	_wire->endTransmission();
-};
+//	DEBUG_PRINT("Write data ");
+//	DEBUG_PRINTLN(writeByteBuffered, BIN);
+}
 
-//PCF8575 pcf8575(I2C_ADDRESS_PCF8575, I2C_SDA, I2C_SCL);

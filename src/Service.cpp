@@ -9,9 +9,15 @@
 
 void LedColor(uint8_t u8Color)
 {
+  static uint8_t u8ColorBuffer=10;
+  if(u8Color != u8ColorBuffer)
+  {
 //DEBUG_F("LedColor(" + (String) u8Color + ")");
-  if (LED_RED   == u8Color)   GpioExpanderIc91.digitalWriteExpander(IO_LED1_PLUS , HIGH); else GpioExpanderIc91.digitalWriteExpander(IO_LED1_PLUS , LOW);
-  if (LED_GREEN == u8Color)   GpioExpanderIc91.digitalWriteExpander(IO_LED1_MINUS, HIGH); else GpioExpanderIc91.digitalWriteExpander(IO_LED1_MINUS, LOW);
+    if (LED_RED   == u8Color)   GpioExpanderIc91.ModifyBuffer(IO_LED1_PLUS , HIGH); else GpioExpanderIc91.ModifyBuffer(IO_LED1_PLUS , LOW);
+    if (LED_GREEN == u8Color)   GpioExpanderIc91.ModifyBuffer(IO_LED1_MINUS, HIGH); else GpioExpanderIc91.ModifyBuffer(IO_LED1_MINUS, LOW);
+    GpioExpanderIc91.SendBufferToI2c();
+    u8ColorBuffer = u8Color;
+  }
 }
 
 void BlinkLed()
@@ -79,10 +85,11 @@ void Click(void)
 	gucDeviceState = STATE_OFF;
 	gucDeviceStateShadow = gucDeviceState;
 
-  GpioExpanderIc91.digitalWriteExpander(IO_EN_LASER_PWR_HI, LOW);   //Laser ausschalten
-  GpioExpanderIc91.digitalWriteExpander(IO_EN_LASER_PWR_LO, LOW);   //Laser ausschalten
-  GpioExpanderIc91.digitalWriteExpander(IO_EN_HEATER_PWR, LOW);     //Heizwiderstand ausschalten
-  GpioExpanderIc91.digitalWriteExpander(IO_EN_TEC, LOW);            //Peltier-Element ausschalten
+  GpioExpanderIc91.ModifyBuffer(IO_EN_LASER_PWR_HI, LOW);   //Laser ausschalten
+  GpioExpanderIc91.ModifyBuffer(IO_EN_LASER_PWR_LO, LOW);   //Laser ausschalten
+  GpioExpanderIc91.ModifyBuffer(IO_EN_HEATER_PWR, LOW);     //Heizwiderstand ausschalten
+  GpioExpanderIc91.ModifyBuffer(IO_EN_TEC, LOW);            //Peltier-Element ausschalten
+  GpioExpanderIc91.SendBufferToI2c();
 }
 
 void DoubleClick(void)
@@ -97,38 +104,39 @@ void Click3sec()
     case STATE_OVERTEMP:
       gucDeviceState = STATE_HEATING;
       gucDeviceStateShadow = gucDeviceState;
-      GpioExpanderIc91.digitalWriteExpander(IO_EN_TEC, HIGH);//Peltier-Element einschalten
+      GpioExpanderIc91.ModifyBuffer(IO_EN_TEC, HIGH);//Peltier-Element einschalten
       break;
     case STATE_OFF:
       gucDeviceState = STATE_HEATING;
       gucDeviceStateShadow = gucDeviceState;
-      GpioExpanderIc91.digitalWriteExpander(IO_EN_TEC, HIGH);//Peltier-Element einschalten
+      GpioExpanderIc91.ModifyBuffer(IO_EN_TEC, HIGH);//Peltier-Element einschalten
       break;
     case STATE_HEATING:
       gucDeviceState = STATE_OFF;
       gucDeviceStateShadow = gucDeviceState;
-      GpioExpanderIc91.digitalWriteExpander(IO_EN_TEC, LOW); //Peltier-Element ausschalten
+      GpioExpanderIc91.ModifyBuffer(IO_EN_TEC, LOW); //Peltier-Element ausschalten
       break;
     case STATE_READY:
       gucDeviceState = STATE_ON;
       gucDeviceStateShadow = gucDeviceState;
-      GpioExpanderIc91.digitalWriteExpander(IO_EN_LASER_PWR_HI, HIGH);   //Laser einschalten
-      GpioExpanderIc91.digitalWriteExpander(IO_EN_LASER_PWR_LO, HIGH);   //Laser einschalten
-      GpioExpanderIc91.digitalWriteExpander(IO_EN_HEATER_PWR, HIGH);     //Heizwiderstand einschalten
+      GpioExpanderIc91.ModifyBuffer(IO_EN_LASER_PWR_HI, HIGH);   //Laser einschalten
+      GpioExpanderIc91.ModifyBuffer(IO_EN_LASER_PWR_LO, HIGH);   //Laser einschalten
+      GpioExpanderIc91.ModifyBuffer(IO_EN_HEATER_PWR, HIGH);     //Heizwiderstand einschalten
       break;
     case STATE_ON:
       gucDeviceState = STATE_OFF;
       gucDeviceStateShadow = gucDeviceState;
-      GpioExpanderIc91.digitalWriteExpander(IO_EN_LASER_PWR_HI, LOW);   //Laser ausschalten
-      GpioExpanderIc91.digitalWriteExpander(IO_EN_LASER_PWR_LO, LOW);   //Laser ausschalten
-      GpioExpanderIc91.digitalWriteExpander(IO_EN_HEATER_PWR, LOW);     //Heizwiderstand ausschalten
-      GpioExpanderIc91.digitalWriteExpander(IO_EN_TEC, LOW);            //Peltier-Element ausschalten
+      GpioExpanderIc91.ModifyBuffer(IO_EN_LASER_PWR_HI, LOW);   //Laser ausschalten
+      GpioExpanderIc91.ModifyBuffer(IO_EN_LASER_PWR_LO, LOW);   //Laser ausschalten
+      GpioExpanderIc91.ModifyBuffer(IO_EN_HEATER_PWR, LOW);     //Heizwiderstand ausschalten
+      GpioExpanderIc91.ModifyBuffer(IO_EN_TEC, LOW);            //Peltier-Element ausschalten
       break;
     default:
       gucDeviceState = STATE_OFF;
       gucDeviceStateShadow = gucDeviceState;
       break;
   }
+  GpioExpanderIc91.SendBufferToI2c();
 }
 
 void ReadSwitch()

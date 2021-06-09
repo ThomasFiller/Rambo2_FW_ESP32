@@ -22,12 +22,13 @@ void InitExternTrigger(uint8_t u8TriggerFunction)
 //DEBUG("gucTriggerFunction= "  + (String)gucTriggerFunction);
   if(gucTriggerFunction & 0x08) //Pullup einschalten?
   {
-    GpioExpanderIc91.digitalWriteExpander(IO_TRIGGER_nPULLUP, LOW);
+    GpioExpanderIc91.ModifyBuffer(IO_TRIGGER_nPULLUP, LOW);
   }
   else 
   {
-    GpioExpanderIc91.digitalWriteExpander(IO_TRIGGER_nPULLUP, HIGH);
+    GpioExpanderIc91.ModifyBuffer(IO_TRIGGER_nPULLUP, HIGH);
   }
+  GpioExpanderIc91.SendBufferToI2c();
 
   if(!(gucTriggerFunction & 0x07))//Interner Trigger?
   {
@@ -97,20 +98,22 @@ void SetLaserMode(uint8_t u8Laser, uint8_t u8LaserMode)
   if(IC94 == IC_LAS[u8Laser])
   {
 DEBUG("IC94 SetLaserMode(" + (String)u8Laser + ", " + (String)u8LaserMode + "); u8PullEnLas=" + (String)u8PullEnLas + "; u8Prg0Las=" +(String)u8Prg0Las+ "; uIO_PULL_EN_LAS[u8Laser]="+ (String)IO_PULL_EN_LAS[u8Laser]+ "; IO_PRG0_LAS[u8Laser]="+ (String)IO_PRG0_LAS[u8Laser]);
-    GpioExpanderIc94.digitalWriteExpander(IO_PULL_EN_LAS[u8Laser], u8PullEnLas);
-    GpioExpanderIc94.digitalWriteExpander(IO_PRG0_LAS   [u8Laser], u8Prg0Las);
+    GpioExpanderIc94.ModifyBuffer(IO_PULL_EN_LAS[u8Laser], u8PullEnLas);
+    GpioExpanderIc94.ModifyBuffer(IO_PRG0_LAS   [u8Laser], u8Prg0Las);
+    GpioExpanderIc94.SendBufferToI2c();
   }
   else
   {
 DEBUG("IC91 SetLaserMode(" + (String)u8Laser + ", " + (String)u8LaserMode + "); u8PullEnLas=" + (String)u8PullEnLas + "; u8Prg0Las=" +(String)u8Prg0Las+ "; uIO_PULL_EN_LAS[u8Laser]="+ (String)IO_PULL_EN_LAS[u8Laser]+ "; IO_PRG0_LAS[u8Laser]="+ (String)IO_PRG0_LAS[u8Laser]);
-    GpioExpanderIc91.digitalWriteExpander(IO_PULL_EN_LAS[u8Laser], u8PullEnLas);
-    GpioExpanderIc91.digitalWriteExpander(IO_PRG0_LAS   [u8Laser], u8Prg0Las);
+    GpioExpanderIc91.ModifyBuffer(IO_PULL_EN_LAS[u8Laser], u8PullEnLas);
+    GpioExpanderIc91.ModifyBuffer(IO_PRG0_LAS   [u8Laser], u8Prg0Las);
+    GpioExpanderIc91.SendBufferToI2c();
   }
 }
 
 void SetLaserDriver300mA(unsigned char ucDriverAddress ,typUnsignedWord uiDriverValue)
 {
-
+DEBUG("SetLaserDriver300mA(" + (String)ucDriverAddress + (String)uiDriverValue.uiWord + ")" );
   pinMode(GPIO_SPI_nCS, OUTPUT);
   pinMode(GPIO_SPI_SCK, OUTPUT);
   pinMode(GPIO_SPI_MOSI, OUTPUT_OPEN_DRAIN);

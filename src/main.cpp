@@ -182,10 +182,11 @@ delay(1);
                                 {
                                   gucDeviceState = STATE_OVERTEMP;
                                   gucDeviceStateShadow = gucDeviceState;
-                                  GpioExpanderIc91.digitalWriteExpander(IO_EN_LASER_PWR_HI, LOW);   //Laser ausschalten
-                                  GpioExpanderIc91.digitalWriteExpander(IO_EN_LASER_PWR_LO, LOW);   //Laser ausschalten
-                                  GpioExpanderIc91.digitalWriteExpander(IO_EN_HEATER_PWR, LOW);     //Heizwiderstand ausschalten
-                                  GpioExpanderIc91.digitalWriteExpander(IO_EN_TEC, LOW);            //Peltier-Element ausschalten
+                                  GpioExpanderIc91.ModifyBuffer(IO_EN_LASER_PWR_HI, LOW);   //Laser ausschalten
+                                  GpioExpanderIc91.ModifyBuffer(IO_EN_LASER_PWR_LO, LOW);   //Laser ausschalten
+                                  GpioExpanderIc91.ModifyBuffer(IO_EN_HEATER_PWR, LOW);     //Heizwiderstand ausschalten
+                                  GpioExpanderIc91.ModifyBuffer(IO_EN_TEC, LOW);            //Peltier-Element ausschalten
+                                  GpioExpanderIc91.SendBufferToI2c();
                                 }
                                 else
                                 {
@@ -228,7 +229,7 @@ delay(1);
                           {
 //DEBUG("FLAG_BLINK_LED_REQUIRED");
                               FLAG_BLINK_LED_REQUIRED=(bool)0;
-                    //          BlinkLed();
+                              BlinkLed();
                           }
                           else
                           {

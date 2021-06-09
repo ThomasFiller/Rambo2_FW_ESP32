@@ -323,9 +323,10 @@ unsigned char pucStringToSend[10];
                   
   //Lasertreiber			//			
     case UART_EN_LAS_HEAT_PWR://Spannungsregler f�r die Versorgung der Laserstromquellen und Heizwiderst�nde eigeschaltet? (0-aus; 1-an)
-      GpioExpanderIc91.digitalWriteExpander(IO_EN_LASER_PWR_HI,pucData[0]);
-      GpioExpanderIc91.digitalWriteExpander(IO_EN_LASER_PWR_LO,pucData[0]);
-      GpioExpanderIc91.digitalWriteExpander(IO_EN_HEATER_PWR,pucData[0]);
+      GpioExpanderIc91.ModifyBuffer(IO_EN_LASER_PWR_HI,pucData[0]);
+      GpioExpanderIc91.ModifyBuffer(IO_EN_LASER_PWR_LO,pucData[0]);
+      GpioExpanderIc91.ModifyBuffer(IO_EN_HEATER_PWR,pucData[0]);
+      GpioExpanderIc91.SendBufferToI2c();
       if(1==pucData[0])
       {
         bPwrSourcesJustEnabled = (bool)1;
@@ -393,6 +394,8 @@ unsigned char pucStringToSend[10];
     case UART_EN_LAS8://Wann ist Laser0 an: 0-immer aus; 1-bei Triggersignal an; 2-bei invertiertem Triggersignal an; FF-immer an
     case UART_EN_LAS9://Wann ist Laser0 an: 0-immer aus; 1-bei Triggersignal an; 2-bei invertiertem Triggersignal an; FF-immer an
       SetLaserMode(ucCmd & 0x0F, pucData[0]);
+      if((ucCmd & 0x0F) == 0) SetLaserMode(10, pucData[0]);
+      if((ucCmd & 0x0F) == 1) SetLaserMode(11, pucData[0]);
       break;
 
                           
@@ -400,19 +403,20 @@ unsigned char pucStringToSend[10];
     case UART_EN_TEC://Peltier-Element ein- oder ausschalten
       if(pucData[0]==1) 
       {
-        GpioExpanderIc91.digitalWriteExpander(IO_EN_TEC, HIGH);//Peltier-Element einschalten
+        GpioExpanderIc91.ModifyBuffer(IO_EN_TEC, HIGH);//Peltier-Element einschalten
         gucDeviceState = STATE_HEATING; 
         gucDeviceStateShadow = gucDeviceState;
       }
       else 
       {
-        GpioExpanderIc91.digitalWriteExpander(IO_EN_LASER_PWR_HI, LOW);//Laser ausschalten
-        GpioExpanderIc91.digitalWriteExpander(IO_EN_LASER_PWR_LO, LOW);//Laser ausschalten
-        GpioExpanderIc91.digitalWriteExpander(IO_EN_HEATER_PWR, LOW);//Heizwiderstand ausschalten
-        GpioExpanderIc91.digitalWriteExpander(IO_EN_TEC, LOW);//Peltier-Element ausschalten
+        GpioExpanderIc91.ModifyBuffer(IO_EN_LASER_PWR_HI, LOW);//Laser ausschalten
+        GpioExpanderIc91.ModifyBuffer(IO_EN_LASER_PWR_LO, LOW);//Laser ausschalten
+        GpioExpanderIc91.ModifyBuffer(IO_EN_HEATER_PWR, LOW);//Heizwiderstand ausschalten
+        GpioExpanderIc91.ModifyBuffer(IO_EN_TEC, LOW);//Peltier-Element ausschalten
         gucDeviceState = STATE_OFF;
         gucDeviceStateShadow = gucDeviceState;
       }
+      GpioExpanderIc91.SendBufferToI2c();
       break;
     case UART_TMP_SET://Solltemperatur einstellen
       gstDAC[TEMP_SET].stBytes.ucHighByte=pucData[0];

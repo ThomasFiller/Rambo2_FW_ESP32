@@ -246,12 +246,12 @@ void GPIO_Setup()
   GpioExpanderIc94.begin();
   GpioExpanderIc91.begin();
 
-  GpioExpanderIc91.digitalWriteExpander(IO_EN_LASER_PWR_HI, LOW);
-  GpioExpanderIc91.digitalWriteExpander(IO_EN_LASER_PWR_LO, LOW);
-  GpioExpanderIc91.digitalWriteExpander(IO_EN_HEATER_PWR, LOW);
-  GpioExpanderIc91.digitalWriteExpander(IO_EN_TEC, LOW);
-  
-  GpioExpanderIc91.digitalWriteExpander(IO_LED1_PLUS, HIGH);
+  GpioExpanderIc91.ModifyBuffer(IO_EN_LASER_PWR_HI, LOW);
+  GpioExpanderIc91.ModifyBuffer(IO_EN_LASER_PWR_LO, LOW);
+  GpioExpanderIc91.ModifyBuffer(IO_EN_HEATER_PWR, LOW);
+  GpioExpanderIc91.ModifyBuffer(IO_EN_TEC, LOW);
+  GpioExpanderIc91.ModifyBuffer(IO_LED1_PLUS, HIGH);
+  GpioExpanderIc91.SendBufferToI2c();
 
 //digitalWrite(GPIO_TRIGGER_OUT, LOW);        //Set Off
 }
