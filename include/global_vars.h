@@ -62,8 +62,13 @@ extern iCHTP   LaserDriver[];
 extern HDC2080 TempHumSensor;
 extern LTC2635 TecDac;
 extern Adafruit_ADS1015 TecAdc;
+extern Adafruit_ADS1015 LiaAdc;
 extern PCF8575 GpioExpanderIc94;
 extern PCF8575 GpioExpanderIc91;
+extern PCF8575 GpioExpanderTia;
+extern PCF8575 GpioExpanderLia;
+
+extern uint8_t u8AvailableI2c;
 
 extern typUnsignedWord gstAvailableIchtp;
 
@@ -77,6 +82,8 @@ extern bool bMapc[NO_OF_LASERS + NO_OF_HEATERS];
 
 extern typUnsignedWord	gstTecTemperature;
 extern typUnsignedWord	gstTecVoltage;
+
+extern typUnsignedWord	gstLiaVoltage;
 
 extern unsigned char DataDirection;
 extern uint16_t guiCurrentADChannel;

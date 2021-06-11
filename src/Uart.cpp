@@ -269,6 +269,26 @@ unsigned char pucStringToSend[200];
       pucStringToSend[3]= gstDAC[DAC_D].stBytes.ucHighByte ;//3. Byte -> 1.Datenbyte
       pucStringToSend[4]= gstDAC[DAC_D].stBytes.ucLowByte ;//4. Byte -> 2.Datenbyte
       break;
+
+
+    case UART_LIA_SIGNAL:
+      pucStringToSend[1] = 6;//1. Byte: Length of frame (5 bei einem Datenbyte; 6 bei 2 Datenbytes)
+      pucStringToSend[3]= gstLiaVoltage.stBytes.ucHighByte;//3. Byte -> 1.Datenbyte
+      pucStringToSend[4]= gstLiaVoltage.stBytes.ucLowByte;//4. Byte -> 2.Datenbyte
+
+DEBUG("UART_LIA_SIGNAL -> PC ");
+      break;
+    case UART_LIA_DIGITAL:
+      pucStringToSend[1] = 6;//1. Byte: Length of frame (5 bei einem Datenbyte; 6 bei 2 Datenbytes)
+      pucStringToSend[3]= 6 ;//3. Byte -> 1.Datenbyte
+      pucStringToSend[4]= 6 ;//4. Byte -> 2.Datenbyte
+DEBUG("UART_LIA_DIGITAL -> PC ");
+      break;
+    case UART_TIA:
+      pucStringToSend[1] = 6;//1. Byte: Length of frame (5 bei einem Datenbyte; 6 bei 2 Datenbytes)
+      pucStringToSend[3] = 4 ;//3. Byte -> 1.Datenbyte
+DEBUG("UART_TIA -> PC ");
+      break;
       
     default:
       pucStringToSend[1]= 5;//1. Byte: Length of frame (5 bei einem Datenbyte; 6 bei 2 Datenbytes) 
@@ -283,6 +303,7 @@ unsigned char pucStringToSend[200];
 void SetParameter(unsigned char ucCmd, unsigned char *pucData, unsigned char ucLenOfFrame) //DataDirection==0
 {
 unsigned char pucStringToSend[10]; 
+typUnsignedWord stReceived; 
   //pucStringToSend[0]=(gucMyUartAddress);  //1. Byte: 7.Bit=1 (read); other Bytes = Address of this Device  
   pucStringToSend[0]= DEFAULT_UART_ADDRESS_TRANSMIT;  //1. Byte: 7.Bit=1 (read); other Bytes = Address of this Device  
   pucStringToSend[1]=4;//2. Byte: Len  
@@ -438,6 +459,31 @@ unsigned char pucStringToSend[10];
       gstDAC[DAC_D].stBytes.ucLowByte=pucData[1];
       FLAG_SET_DAC_B_REQUIRED = (bool)1;
       break;
+
+    case UART_LIA_DIGITAL:
+      stReceived.stBytes.ucHighByte = pucData[0];      
+      stReceived.stBytes.ucLowByte=pucData[1];
+DEBUG("UART_LIA_DIGITAL; stReceived= " + (String)stReceived.uiWord + "; u8AvailableI2c= " + (String)u8AvailableI2c );
+      if(ValBit(u8AvailableI2c, BIT_LIA_DIGITAL_AVAILABLE))
+      {
+DEBUG("Sende an LIA ");
+        GpioExpanderLia.SetWritByteBuffered(stReceived.uiWord);
+        GpioExpanderLia.SendBufferToI2c();
+      }
+      break;
+    case UART_TIA:
+      stReceived.stBytes.ucHighByte = 0;      
+      stReceived.stBytes.ucLowByte  = pucData[0];
+DEBUG("UART_TIA; stReceived= " + (String)stReceived.uiWord + "; u8AvailableI2c= " + (String)u8AvailableI2c );
+      if(ValBit(u8AvailableI2c, BIT_TIA_AVAILABLE))
+      {
+DEBUG("Sende an TIA ");
+        GpioExpanderTia.SetWritByteBuffered(stReceived.uiWord);
+        GpioExpanderTia.SendBufferToI2c();
+      }
+      break;
+
+
     
     default:
       pucStringToSend[1]= 5;//1. Byte: Length of frame (5 bei einem Datenbyte; 6 bei 2 Datenbytes)  

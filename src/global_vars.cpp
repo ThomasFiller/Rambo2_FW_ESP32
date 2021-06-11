@@ -53,11 +53,18 @@ iCHTP   LaserDriver[NO_OF_LASERS + NO_OF_HEATERS];
 HDC2080 TempHumSensor(I2C_ADDRESS_TEMP_HUM_SENSOR, SCL1);
 LTC2635 TecDac(I2C_ADDRESS_DAC1, I2C_CHAN_DAC);
 Adafruit_ADS1015 TecAdc(I2C_ADDRESS_ADC1, I2C_CHAN_ADC);
+Adafruit_ADS1015 LiaAdc(I2C_ADDRESS_ADC_Lia, SCL1);
 PCF8575 GpioExpanderIc94(I2C_ADDRESS_GPIO_EXPANDER_UCBOARD_IC94, SCL1);
 PCF8575 GpioExpanderIc91(I2C_ADDRESS_GPIO_EXPANDER_UCBOARD_IC91, SCL1);
+PCF8575 GpioExpanderTia(I2C_ADDRESS_GPIO_EXPANDER_Tia, SCL1);
+PCF8575 GpioExpanderLia(I2C_ADDRESS_GPIO_EXPANDER_Lia, SCL1);
+
+uint8_t u8AvailableI2c = 0;
 
 typUnsignedWord	gstTecTemperature;
 typUnsignedWord	gstTecVoltage;
+
+typUnsignedWord	gstLiaVoltage;
 
 typUnsignedWord gstAvailableIchtp;
 typUnsignedWord	gstDAC[NO_OF_DACS];

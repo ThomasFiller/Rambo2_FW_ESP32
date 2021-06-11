@@ -33,6 +33,12 @@
 
 #define INDEX_MAX_TEC_HEAT_CURRENT 6
 
+#define BIT_TIA_AVAILABLE 0
+#define BIT_LIA_DIGITAL_AVAILABLE 1
+
+#define BIT_IC91_AVAILABLE 3
+#define BIT_IC94_AVAILABLE 4
+
 //*****************************States des Zustandsautomaten zum Abfragen der ADCs im iC-HTP und HumSensor
 #define I_LAS                           0 //Strom durch die einzelnen Laser
 #define MDK                             1 //FlussSpannungen der Laser an den 300mA-Treiern lesen  
@@ -42,13 +48,14 @@
 #define BOARD_TEMPERATURE_AND_HUMIDITY  5
 #define EVALUATION_SOURCEVOLTAGE        6
 #define TEC                             7 //Temperatur und Spannung am Peltier-Element mit ADC Ads1015 lesen 
+//#define LIA                             8 //LockInAmp Spannung lesen
 
 //******************************I2C-Adressen
 /*UcEspInterBoard.SchDoc 1 für LIA
          ICi1   IO-Expander PCF8575     SCL1    0100 010X =  0x44 (0100XXX, S. 16)    Pin18(A0)->GND; Pin23(A1)->3V3; Pin24(A2)->GND
          ICi2   ADC ADS1015IDGSR        SCL1    1001 001X =  0x92 (10010XX, S.19)      Pin1 -> +5V5
 UcEspInterBoard.SchDoc 2 für TIA
-         ICi1   IO-Expander PCF8575     SCL1    0100 111X =  0x4F (0100XXX, S. 16)    Pin18(A0)->3V3; Pin23(A1)->3V3; Pin24(A2)->3V3
+         ICi1   IO-Expander PCF8575     SCL1    0100 111X =  0x4E (0100XXX, S. 16)    Pin18(A0)->3V3; Pin23(A1)->3V3; Pin24(A2)->3V3
          ICi2   ADC ADS1015IDGSR        nicht bestückt
 
 Display
@@ -93,6 +100,10 @@ TEC-CTL.SchDoc (zweiter TEC-Controller für SHG)
 
 #define I2C_ADDRESS_GPIO_EXPANDER_UCBOARD_IC94 0x21
 #define I2C_ADDRESS_GPIO_EXPANDER_UCBOARD_IC91 0x20
+
+#define I2C_ADDRESS_GPIO_EXPANDER_Tia 0x27
+#define I2C_ADDRESS_GPIO_EXPANDER_Lia 0x22
+#define I2C_ADDRESS_ADC_Lia 0x49
 
 //*****************************I2C-Kan�le
 #define SCL1 1
@@ -212,15 +223,22 @@ TEC-CTL.SchDoc (zweiter TEC-Controller für SHG)
 			
 //TEC-Control			//			
 #define	UART_EN_TEC	        0x30	//	1	1	Peltier-Element einschalten
-#define	UART_VTEC	        0x32	//	0	2	liest den aktuellen Strom durch das Peltierelement
-#define	UART_ITEC	        0x33	//	0	2	liest die aktuelle Spannung am Peltierelement
-#define	UART_TMP	        0x34	//	0	2	liest die aktuelle Temperatur
-#define	UART_TMP_SET	        0x35	//	2	2	Solltemperatur einstellen
+#define	UART_VTEC	          0x32	//	0	2	liest den aktuellen Strom durch das Peltierelement
+#define	UART_ITEC	          0x33	//	0	2	liest die aktuelle Spannung am Peltierelement
+#define	UART_TMP	          0x34	//	0	2	liest die aktuelle Temperatur
+#define	UART_TMP_SET	      0x35	//	2	2	Solltemperatur einstellen
 
 //Freie DAC-Kan�le
 #define	UART_DAC_B	        0x36	//	2	2
 #define	UART_DAC_C	        0x37	//	2	2
 #define	UART_DAC_D	        0x38	//	2	2
+
+//Lock-In-Amplifier						
+#define	UART_LIA_DIGITAL	  0x41	//	2	3	Schreiben: Byte1->Pin10..17; Byte2->Pin18..25 |  Lesen Byte1,2 wie Schreiben, Byte3->Pin6..7
+#define	UART_LIA_SIGNAL	    0x42	//	0	2	Messwert des ADC auf dem InterBoard
+//TransImpedance-Amplifier						
+#define	UART_TIA	          0x40	//	1	1	bit 0..7 -> Pin5, Pin10, Pin11, Pin12, Pin13, Pin14
+
 
 //*******************************ERROR-Codes
 #define	NON_ERROR			0

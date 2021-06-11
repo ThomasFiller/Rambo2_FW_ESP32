@@ -242,9 +242,51 @@ void GPIO_Setup()
   GpioExpanderIc91.pinMode(IO_LED1_MINUS, OUTPUT);
   GpioExpanderIc91.pinMode(IO_LED1_PLUS, OUTPUT);
 
+//*****************************TIA / LIA
+  for (uint8_t u8CntTia = 0; u8CntTia < 5; u8CntTia++) GpioExpanderTia.pinMode(u8CntTia, OUTPUT);
+  GpioExpanderTia.pinMode(5, INPUT);
+
+  for (uint8_t u8CntLia = 0; u8CntLia < 16; u8CntLia++) GpioExpanderLia.pinMode(u8CntLia, OUTPUT);
+  
 //****************************Starte GPIO-Expander
-  GpioExpanderIc94.begin();
-  GpioExpanderIc91.begin();
+  if (GpioExpanderIc94.begin() == 0) 
+  {
+    SetBit(u8AvailableI2c, BIT_IC94_AVAILABLE); 
+DEBUG("GpioExpanderIc91 ist vorhanden" );
+  }  
+  
+  if (GpioExpanderIc91.begin() == 0) 
+  {
+    SetBit(u8AvailableI2c, BIT_IC91_AVAILABLE); 
+DEBUG("GpioExpanderIc91 ist vorhanden" );
+  }
+
+uint8_t u8Error;
+  u8Error = GpioExpanderTia.begin();
+  if (u8Error == 0) 
+  {
+    SetBit(u8AvailableI2c, BIT_TIA_AVAILABLE); 
+DEBUG("TIA ist vorhanden" );
+  }
+  else
+  {
+DEBUG("TIA ist NICHT vorhanden; u8Error= " + (String)u8Error );
+  }
+
+  u8Error = GpioExpanderLia.begin();
+  if (u8Error == 0) 
+  {
+    SetBit(u8AvailableI2c, BIT_LIA_DIGITAL_AVAILABLE);
+DEBUG("LIA ist vorhanden" );
+  }
+  else
+  {
+DEBUG("LIA ist NICHT vorhanden" + (String)u8Error );
+  }
+
+  
+  
+  
 
   GpioExpanderIc91.ModifyBuffer(IO_EN_LASER_PWR_HI, LOW);
   GpioExpanderIc91.ModifyBuffer(IO_EN_LASER_PWR_LO, LOW);

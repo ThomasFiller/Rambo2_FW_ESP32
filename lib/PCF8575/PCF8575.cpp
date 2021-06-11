@@ -157,7 +157,9 @@ PCF8575::PCF8575(uint8_t address, uint8_t u8I2cChannel){
 /**
  * wake up i2c controller
  */
-void PCF8575::begin(){
+uint8_t PCF8575::begin()
+{
+uint8_t u8Error = 0;
 	#if !defined(__AVR) && !defined(__STM32F1__)
 		_wire->begin(_sda, _scl);
 	#else
@@ -171,7 +173,8 @@ void PCF8575::begin(){
 //		Serial.println( readMode, BIN);
 
 	// Check if there are pins to set low
-	if (writeMode>0 || readMode>0){
+	if (writeMode>0 || readMode>0)
+	{
 //		DEBUG_PRINTLN("Set write mode");
 		_wire->beginTransmission(_address);
 //		DEBUG_PRINT(" ");
@@ -186,7 +189,7 @@ void PCF8575::begin(){
 		_wire->write((uint8_t) (~(usedPin >> 8)));
 
 //		DEBUG_PRINTLN("Start end trasmission if stop here check pullup resistor.");
-		_wire->endTransmission();
+		u8Error = _wire->endTransmission();
 	}
 
 	// If using interrupt set interrupt value to pin
@@ -198,6 +201,8 @@ void PCF8575::begin(){
 
 	// inizialize last read
 	lastReadMillis = millis();
+	
+	return u8Error;
 }
 
 void PCF8575::SwitchToI2cChan() //Schaltet auf einen der 3 I2C-Kan�le durch Multiplexen des SCL-Signals
@@ -365,7 +370,7 @@ uint8_t PCF8575::digitalRead(uint8_t pin)
 	SwitchToI2cChan();
 	uint8_t value = LOW;
 	if ((bit(pin) & writeMode)>0){
-		if ((bit(pin) & writeByteBuffered)>0){
+		if ((bit(pin) & u16writeByteBuffered)>0){
 			  value = HIGH;
 		  }else{
 			  value = LOW;
@@ -429,32 +434,36 @@ void PCF8575::digitalWriteExpander(uint8_t pin, uint8_t value)
 	SendBufferToI2c();
 };
 
+void PCF8575::SetWritByteBuffered(uint16_t u16writeByteToBuffer)
+{
+	u16writeByteBuffered = u16writeByteToBuffer & writeMode;
+}
+
 void PCF8575::ModifyBuffer(uint8_t pin, uint8_t value)
 {
 	if (value==HIGH){
-		writeByteBuffered = writeByteBuffered | bit(pin);
+		u16writeByteBuffered = u16writeByteBuffered | bit(pin);
 	}else{
-		writeByteBuffered = writeByteBuffered & ~bit(pin);
+		u16writeByteBuffered = u16writeByteBuffered & ~bit(pin);
 	}
 	//DEBUG_PRINT("Write data ");
-	//DEBUG_PRINTLN(writeByteBuffered, BIN);
+	//DEBUG_PRINTLN(u16writeByteBuffered, BIN);
 	//DEBUG_PRINT(" for pin ");
 	//DEBUG_PRINT(pin);
 	//DEBUG_PRINT(" bin value ");
 	//DEBUG_PRINT(bit(pin), BIN);
 	//DEBUG_PRINT(" value ");
 	//DEBUG_PRINTLN(value);
-	writeByteBuffered = writeByteBuffered & writeMode;
+	u16writeByteBuffered = u16writeByteBuffered & writeMode;
 }
 
 void PCF8575::SendBufferToI2c()
 {
 	SwitchToI2cChan();
 	_wire->beginTransmission(_address);     //Begin the transmission to PCF8575
-	_wire->write((uint8_t) writeByteBuffered);
-	_wire->write((uint8_t) (writeByteBuffered >> 8));
+	_wire->write((uint8_t) u16writeByteBuffered);
+	_wire->write((uint8_t) (u16writeByteBuffered >> 8));
 	_wire->endTransmission();
 //	DEBUG_PRINT("Write data ");
-//	DEBUG_PRINTLN(writeByteBuffered, BIN);
+//	DEBUG_PRINTLN(u16writeByteBuffered, BIN);
 }
-

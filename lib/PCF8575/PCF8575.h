@@ -108,7 +108,7 @@ public:
 //	PCF8575(TwoWire *pWire, uint8_t address, uint8_t sda, uint8_t scl, uint8_t interruptPin,  void (*interruptFunction)());
 #endif
 
-	void begin();
+	uint8_t begin();
 	void pinMode(uint8_t pin, uint8_t mode);
 
 	void readBuffer(bool force = true);
@@ -139,6 +139,7 @@ public:
 		uint16_t digitalReadAll(void);
 	#endif
 	void digitalWriteExpander(uint8_t pin, uint8_t value);
+	void SetWritByteBuffered(uint16_t u16writeByteToBuffer);
 	void ModifyBuffer(uint8_t pin, uint8_t value);
 	void SendBufferToI2c();
 
@@ -165,7 +166,7 @@ private:
 	uint16_t byteBuffered = 0;
 	unsigned long lastReadMillis = 0;
 
-	uint16_t writeByteBuffered = 0;
+	uint16_t u16writeByteBuffered = 0;
 
 	void SwitchToI2cChan();
 

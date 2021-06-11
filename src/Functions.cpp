@@ -78,7 +78,7 @@ void CycleTimer_Task(void * pvParameters)
   {
     if (ucCntBlinkLed++ > 8) {FLAG_BLINK_LED_REQUIRED = (bool)1; ucCntBlinkLed=0;}
     FLAG_READ_ADC_AND_SWITCH_REQUIRED = (bool)1;
-    vTaskDelay(10);
+    vTaskDelay(5);
   }
 }
 
@@ -239,6 +239,31 @@ static uint16_t u8ConfigReg = 0;
   TecAdc.WritConfigReg(u8ConfigReg);
 }
 
+void ReadAndConfigureLiaAdc()//ADC 4 channel
+{
+static uint16_t u16BufferADC[16];
+static uint8_t u8CntAdcResult = 0;
+  if(ValBit(u8AvailableI2c, BIT_LIA_DIGITAL_AVAILABLE))
+  {
+    u16BufferADC[u8CntAdcResult] = LiaAdc.ReadConversionReg() >> 4;
+    u8CntAdcResult++;
+    if(u8CntAdcResult > 15)
+    {
+DEBUG("ReadAndConfigureLiaAdc; gstLiaVoltage.uiWord= " + (String)gstLiaVoltage.uiWord + "; u16BufferADC[0]= " + (String)u16BufferADC[0]);
+
+      uint16_t	gstLiaVoltageTmp = 0;
+      for (uint8_t u8CntAccu = 0; u8CntAccu < 16; u8CntAccu++)
+      {
+        gstLiaVoltageTmp += u16BufferADC[u8CntAccu];
+        u16BufferADC[u8CntAccu] = 0;
+      }
+      gstLiaVoltage.uiWord = gstLiaVoltageTmp;
+      u8CntAdcResult = 0;
+    }
+  }
+}
+
+
 bool bUngerade(int zahl)
 {
 	return zahl & 1;  
@@ -357,7 +382,7 @@ void ReadAdc()
 bool bRegulationInProgress;
 #endif
 
-   switch(guiCurrentADChannel)
+  switch(guiCurrentADChannel)
   {
     case I_LAS: //Strom durch die einzelnen Laser
       ReadAndConfigureAdc( I_LAS, MDK);
@@ -411,9 +436,9 @@ bool bRegulationInProgress;
     case TEC: //Temperatur und Spannung am Peltier-Element mit ADC Ads1015 lesen 
       ReadAndConfigureTecAdc();
       guiCurrentADChannel = I_LAS;      
-    break;
   
     default:
       guiCurrentADChannel = I_LAS;
   }
+  ReadAndConfigureLiaAdc();
 }
