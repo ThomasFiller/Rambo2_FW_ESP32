@@ -85,6 +85,11 @@ extern typUnsignedWord	gstTecVoltage;
 
 extern typUnsignedWord	gstLiaVoltage;
 
+extern uint8_t u8TiaDigital;
+extern typUnsignedWord gstLiaDigital;
+extern uint8_t u8LiaAnalogRange;
+extern uint8_t u8LiaAnalogAvgDepth;
+
 extern unsigned char DataDirection;
 extern uint16_t guiCurrentADChannel;
 
@@ -110,6 +115,12 @@ extern const int eeucIntTrigFreqHighByte[NO_OF_SETUPS];
 extern const int eeucTriggerFunction[NO_OF_SETUPS];
 
 extern const int eeucDco[2 + NO_OF_HEATERS+1][NO_OF_SETUPS];
+
+extern const int eeucTiaDigital[NO_OF_SETUPS];
+extern const int eeucLiaDigitalLowByte[NO_OF_SETUPS];
+extern const int eeucLiaDigitalHighByte[NO_OF_SETUPS];
+extern const int eeucLiaAnalogRange[NO_OF_SETUPS];
+extern const int eeucLiaAnalogAvgDepth[NO_OF_SETUPS];
 
 extern const size_t eepromSize;
 

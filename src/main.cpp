@@ -33,18 +33,19 @@ void setup()
 
   TecAdc.WritConfigReg( ADS1015_REG_CONFIG_OS_BUSY |ADS1015_REG_CONFIG_MUX_SINGLE_0|ADS1015_REG_CONFIG_PGA_6_144V|ADS1015_REG_CONFIG_MODE_CONTIN|ADS1015_REG_CONFIG_DR_3300SPS|ADS1015_REG_CONFIG_CMODE_WINDOW|ADS1015_REG_CONFIG_CPOL_ACTVHI|ADS1015_REG_CONFIG_CLAT_LATCH|ADS1015_REG_CONFIG_CQUE_NONE );
   
-  #define LIA_ADC_diff       ADS1015_REG_CONFIG_OS_BUSY      |\
-                        ADS1015_REG_CONFIG_MUX_DIFF_0_1 /*hier ist der Kanal*/ |\
-                        ADS1015_REG_CONFIG_PGA_1_024V   |\
-                        ADS1015_REG_CONFIG_MODE_CONTIN  |\
-                        ADS1015_REG_CONFIG_DR_3300SPS   |\
-                        ADS1015_REG_CONFIG_CMODE_WINDOW |\
-                        ADS1015_REG_CONFIG_CPOL_ACTVHI  |\
-                        ADS1015_REG_CONFIG_CLAT_LATCH   |\
-                        ADS1015_REG_CONFIG_CQUE_NONE
-  LiaAdc.WritConfigReg(LIA_ADC_diff);
-  //LiaAdc.WritConfigReg( ADS1015_REG_CONFIG_OS_BUSY |ADS1015_REG_CONFIG_MUX_SINGLE_0|ADS1015_REG_CONFIG_PGA_6_144V|ADS1015_REG_CONFIG_MODE_CONTIN|ADS1015_REG_CONFIG_DR_3300SPS|ADS1015_REG_CONFIG_CMODE_WINDOW|ADS1015_REG_CONFIG_CPOL_ACTVHI|ADS1015_REG_CONFIG_CLAT_LATCH|ADS1015_REG_CONFIG_CQUE_NONE );
- 
+
+//      #define LIA_ADC_diff       ADS1015_REG_CONFIG_OS_BUSY      |\
+//                        ADS1015_REG_CONFIG_MUX_DIFF_0_1 /*hier ist der Kanal*/ |\
+  //                      ADS1015_REG_CONFIG_PGA_1_024V   |\
+    //                    ADS1015_REG_CONFIG_MODE_CONTIN  |\
+      ////                ADS1015_REG_CONFIG_CMODE_WINDOW |\
+          //              ADS1015_REG_CONFIG_CPOL_ACTVHI  |\
+            //            ADS1015_REG_CONFIG_CLAT_LATCH   |\
+              //          ADS1015_REG_CONFIG_CQUE_NONE
+//  LiaAdc.WritConfigReg(LIA_ADC_diff);
+ConfigureLiaAdc((uint8_t)(ADS1015_REG_CONFIG_PGA_1_024V >> 8));
+//ConfigureLiaAdc(u8LiaAnalogRange);
+
   gstAvailableIchtp.uiWord = 0;
   
   for(uint8_t u8LasNo=0; u8LasNo < (NO_OF_LASERS + NO_OF_HEATERS); u8LasNo++)

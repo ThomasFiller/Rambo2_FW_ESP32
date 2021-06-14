@@ -12,3 +12,4 @@ extern void SetLaserDriver300mA(unsigned char ucDriverAddress ,typUnsignedWord u
 //extern void InternalTrigger_Task(void * pvParameters);
 extern void CycleTimer_Task(void * pvParameters);
 extern void InitExternTrigger(uint8_t u8TriggerFunction);
+extern void ConfigureLiaAdc(uint8_t u8MeasurementRange);

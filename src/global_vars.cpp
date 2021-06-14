@@ -80,6 +80,11 @@ typUnsignedWord gstItec;
 typUnsignedWord gstVtec;
 typUnsignedWord gstTec5V;
 
+uint8_t u8TiaDigital;
+typUnsignedWord gstLiaDigital;
+uint8_t u8LiaAnalogRange;
+uint8_t u8LiaAnalogAvgDepth;
+
 uint8_t DataDirection;
 
 uint16_t guiCurrentADChannel;
@@ -103,4 +108,10 @@ const int eeucIntTrigFreqHighByte[NO_OF_SETUPS]={129,130};
 const int eeucTriggerFunction[NO_OF_SETUPS]={131,132};
 const int eeucDco[2+NO_OF_HEATERS+1][NO_OF_SETUPS]={133,134,135,136,137,138,139, 140,141,142,143,144,145,146};
 
-const size_t eepromSize = 150;
+const int eeucTiaDigital[NO_OF_SETUPS]={147,148};
+const int eeucLiaDigitalLowByte[NO_OF_SETUPS]={149,1502};
+const int eeucLiaDigitalHighByte[NO_OF_SETUPS]={151, 152};
+const int eeucLiaAnalogRange[NO_OF_SETUPS]={153,154};
+const int eeucLiaAnalogAvgDepth[NO_OF_SETUPS]={155,156};
+
+const size_t eepromSize = 200;

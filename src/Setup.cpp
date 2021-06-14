@@ -68,6 +68,12 @@ void FirstCall()//wird nur beim ersten mal nach dem Programmieren aufgerufen, um
     EEPROM.write(eeucIntTrigFreqLowByte[gucSetupNo]  , (unsigned char) 100);
     EEPROM.write(eeucIntTrigFreqHighByte[gucSetupNo] ,  (unsigned char) 0);
     EEPROM.write(eeucTriggerFunction[gucSetupNo]  ,   (unsigned char) 0);
+
+    EEPROM.write(eeucTiaDigital[gucSetupNo] ,  (unsigned char) 0);
+    EEPROM.write(eeucLiaDigitalLowByte[gucSetupNo] ,  (unsigned char) 0);
+    EEPROM.write(eeucLiaDigitalHighByte[gucSetupNo] ,  (unsigned char) 0);
+    EEPROM.write(eeucLiaAnalogRange[gucSetupNo] ,  (unsigned char) (ADS1015_REG_CONFIG_PGA_1_024V >> 8));
+    EEPROM.write(eeucLiaAnalogAvgDepth[gucSetupNo] ,  (unsigned char) 0);
   }
   EEPROM.write(eeucStorageBytes[T_MIN] , 20 );
   EEPROM.write(eeucStorageBytes[T_MAX] , 31 );
@@ -132,6 +138,12 @@ void ReadSetupFromEeprom()//Parameter aus EEPROM einlesen
 
   gucTriggerFunction    = EEPROM.read(eeucTriggerFunction[gucSetupNo]);
   //gucMyUartAddress      = eeucMyUartAddress;
+
+  u8TiaDigital                      = EEPROM.read(eeucTiaDigital[gucSetupNo]);
+  gstLiaDigital.stBytes.ucLowByte   = EEPROM.read(eeucLiaDigitalLowByte[gucSetupNo]);
+  gstLiaDigital.stBytes.ucHighByte  = EEPROM.read(eeucLiaDigitalHighByte[gucSetupNo]);
+  u8LiaAnalogRange                  = EEPROM.read(eeucLiaAnalogRange[gucSetupNo]);
+  u8LiaAnalogAvgDepth               = EEPROM.read(eeucLiaAnalogAvgDepth[gucSetupNo]);
   
   FLAG_SET_I_LAS_REQUIRED = (bool)1;
   FLAG_SET_TEMP_REQUIRED = (bool)1;
@@ -171,6 +183,12 @@ void SaveSetupToEeprom(void)//EEPROM - Parameterablage
   EEPROM.write(eeucIntTrigFreqLowByte[gucSetupNo]    ,   gstInternalTriggerFrequency.stBytes.ucLowByte);
   EEPROM.write(eeucIntTrigFreqHighByte[gucSetupNo]   ,   gstInternalTriggerFrequency.stBytes.ucHighByte);
   EEPROM.write(eeucTriggerFunction[gucSetupNo] , gucTriggerFunction);
+
+  EEPROM.write(eeucTiaDigital[gucSetupNo] ,  u8TiaDigital);
+  EEPROM.write(eeucLiaDigitalLowByte[gucSetupNo] ,  gstLiaDigital.stBytes.ucLowByte);
+  EEPROM.write(eeucLiaDigitalHighByte[gucSetupNo] ,  gstLiaDigital.stBytes.ucHighByte);
+  EEPROM.write(eeucLiaAnalogRange[gucSetupNo] ,  u8LiaAnalogRange);
+  EEPROM.write(eeucLiaAnalogAvgDepth[gucSetupNo] ,  u8LiaAnalogAvgDepth);
 
   EEPROM.commit();
 DEBUG("SaveSetupToEeprom; gstInternalTriggerFrequency= " + (String) gstInternalTriggerFrequency.uiWord + "; gstInternalTriggerFrequency.stBytes.ucHighByte= " + gstInternalTriggerFrequency.stBytes.ucHighByte+ "; gstInternalTriggerFrequency.stBytes.ucLowByte= " + gstInternalTriggerFrequency.stBytes.ucLowByte);
