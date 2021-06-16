@@ -139,9 +139,16 @@ void ReadSetupFromEeprom()//Parameter aus EEPROM einlesen
   gucTriggerFunction    = EEPROM.read(eeucTriggerFunction[gucSetupNo]);
   //gucMyUartAddress      = eeucMyUartAddress;
 
-  u8TiaDigital                      = EEPROM.read(eeucTiaDigital[gucSetupNo]);
+  gstTiaDigital.stBytes.ucLowByte  = EEPROM.read(eeucTiaDigital[gucSetupNo]);
+  gstTiaDigital.stBytes.ucHighByte = 0;
+  GpioExpanderTia.SetWritByteBuffered(gstTiaDigital.uiWord);
+  GpioExpanderTia.SendBufferToI2c();
+
   gstLiaDigital.stBytes.ucLowByte   = EEPROM.read(eeucLiaDigitalLowByte[gucSetupNo]);
   gstLiaDigital.stBytes.ucHighByte  = EEPROM.read(eeucLiaDigitalHighByte[gucSetupNo]);
+  GpioExpanderLia.SetWritByteBuffered(gstLiaDigital.uiWord);
+  GpioExpanderLia.SendBufferToI2c();
+
   u8LiaAnalogRange                  = EEPROM.read(eeucLiaAnalogRange[gucSetupNo]);
   u8LiaAnalogAvgDepth               = EEPROM.read(eeucLiaAnalogAvgDepth[gucSetupNo]);
   
@@ -156,6 +163,9 @@ void ReadSetupFromEeprom()//Parameter aus EEPROM einlesen
   gu8DcoToSet = 2 + NO_OF_HEATERS; 
   bSetAllLaser = (bool)1;
   bSetAllDco = (bool)1;
+
+DEBUG("ReadSetupFromEeprom; gstTiaDigital= " + (String) gstTiaDigital.uiWord);
+DEBUG("ReadSetupFromEeprom; gstLiaDigital= " + (String) gstLiaDigital.uiWord);
 }
   
 void SaveSetupToEeprom(void)//EEPROM - Parameterablage
@@ -177,21 +187,25 @@ void SaveSetupToEeprom(void)//EEPROM - Parameterablage
     EEPROM.write(eeucIlasLowByte[ucCnt][gucSetupNo]        , gstIlas[ucCnt].stBytes.ucLowByte);
     EEPROM.write(eeucIlasHighByte[ucCnt][gucSetupNo]       , gstIlas[ucCnt].stBytes.ucHighByte); 
     if (ucCnt < NO_OF_LASERS) EEPROM.write(eeucEnLas[ucCnt][gucSetupNo] , gucEnLas[ucCnt]); 
-  DEBUG("SaveSetupToEeprom; gstIlas[" + (String)ucCnt + "]= " + (String)gstIlas[ucCnt].uiWord);
+//DEBUG("SaveSetupToEeprom; gstIlas[" + (String)ucCnt + "]= " + (String)gstIlas[ucCnt].uiWord);
   }
 
   EEPROM.write(eeucIntTrigFreqLowByte[gucSetupNo]    ,   gstInternalTriggerFrequency.stBytes.ucLowByte);
   EEPROM.write(eeucIntTrigFreqHighByte[gucSetupNo]   ,   gstInternalTriggerFrequency.stBytes.ucHighByte);
   EEPROM.write(eeucTriggerFunction[gucSetupNo] , gucTriggerFunction);
 
-  EEPROM.write(eeucTiaDigital[gucSetupNo] ,  u8TiaDigital);
+  gstTiaDigital.uiWord = GpioExpanderTia.digitalReadExpander();
+  gstLiaDigital.uiWord = GpioExpanderLia.digitalReadExpander();
+  EEPROM.write(eeucTiaDigital[gucSetupNo] ,  gstTiaDigital.stBytes.ucLowByte);
   EEPROM.write(eeucLiaDigitalLowByte[gucSetupNo] ,  gstLiaDigital.stBytes.ucLowByte);
   EEPROM.write(eeucLiaDigitalHighByte[gucSetupNo] ,  gstLiaDigital.stBytes.ucHighByte);
   EEPROM.write(eeucLiaAnalogRange[gucSetupNo] ,  u8LiaAnalogRange);
   EEPROM.write(eeucLiaAnalogAvgDepth[gucSetupNo] ,  u8LiaAnalogAvgDepth);
 
   EEPROM.commit();
-DEBUG("SaveSetupToEeprom; gstInternalTriggerFrequency= " + (String) gstInternalTriggerFrequency.uiWord + "; gstInternalTriggerFrequency.stBytes.ucHighByte= " + gstInternalTriggerFrequency.stBytes.ucHighByte+ "; gstInternalTriggerFrequency.stBytes.ucLowByte= " + gstInternalTriggerFrequency.stBytes.ucLowByte);
+//DEBUG("SaveSetupToEeprom; gstInternalTriggerFrequency= " + (String) gstInternalTriggerFrequency.uiWord + "; gstInternalTriggerFrequency.stBytes.ucHighByte= " + gstInternalTriggerFrequency.stBytes.ucHighByte+ "; gstInternalTriggerFrequency.stBytes.ucLowByte= " + gstInternalTriggerFrequency.stBytes.ucLowByte);
+DEBUG("SaveSetupToEeprom; gstTiaDigital= " + (String) gstTiaDigital.uiWord);
+DEBUG("SaveSetupToEeprom; gstLiaDigital= " + (String) gstLiaDigital.uiWord);
 }
 
 /**
@@ -301,10 +315,6 @@ DEBUG("LIA ist vorhanden" );
   {
 DEBUG("LIA ist NICHT vorhanden" + (String)u8Error );
   }
-
-  
-  
-  
 
   GpioExpanderIc91.ModifyBuffer(IO_EN_LASER_PWR_HI, LOW);
   GpioExpanderIc91.ModifyBuffer(IO_EN_LASER_PWR_LO, LOW);

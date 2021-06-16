@@ -247,7 +247,8 @@ void PCF8575::pinMode(uint8_t pin, uint8_t mode){
  * Read value from i2c and bufferize it
  * @param force
  */
-void PCF8575::readBuffer(bool force){
+void PCF8575::readBuffer(bool force)
+{
 	SwitchToI2cChan();
 	if (millis() > PCF8575::lastReadMillis+READ_ELAPSED_TIME || _usingInterrupt || force){
 		_wire->requestFrom(_address,(uint8_t)2);// Begin transmission to PCF8575 with the buttons
@@ -422,6 +423,26 @@ uint8_t PCF8575::digitalRead(uint8_t pin)
 	DEBUG_PRINTLN(value);
 	return value;
 };
+
+/**
+ * Liest alle GPIOs und speichert das Ergebnis in u16ReadByte
+ * @param -
+ * @return word mit allen GPIOs
+ */
+uint16_t PCF8575::digitalReadExpander()
+{
+	SwitchToI2cChan();
+//	DEBUG_PRINTLN("Read from buffer");
+	_wire->requestFrom(_address,(uint8_t)2);// Begin transmission to PCF8575 with the buttons
+	if(_wire->available())   // If uint16_ts are available to be recieved
+	{
+		u16ReadByte = _wire->read();// Read a uint16_t
+		u16ReadByte |= _wire->read() << 8;// Read a uint16_t
+//DEBUG_PRINTLN("digitalReadExpander u16ReadByte= " + (String)u16ReadByte);
+	}
+	return u16ReadByte;
+}
+
 
 /**
  * Write on pin

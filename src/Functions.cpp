@@ -268,7 +268,7 @@ static uint8_t u8CntAdcResult = 0;
     u8CntAdcResult++;
     if(u8CntAdcResult > 15)
     {
-DEBUG("ReadLiaAdc; gstLiaVoltage.uiWord= " + (String)gstLiaVoltage.uiWord + "; u16BufferADC[0]= " + (String)u16BufferADC[0]);
+//DEBUG("ReadLiaAdc; gstLiaVoltage.uiWord= " + (String)gstLiaVoltage.uiWord + "; u16BufferADC[0]= " + (String)u16BufferADC[0]);
 
       uint16_t	gstLiaVoltageTmp = 0;
       for (uint8_t u8CntAccu = 0; u8CntAccu < 16; u8CntAccu++)

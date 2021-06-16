@@ -80,7 +80,7 @@ typUnsignedWord gstItec;
 typUnsignedWord gstVtec;
 typUnsignedWord gstTec5V;
 
-uint8_t u8TiaDigital;
+typUnsignedWord gstTiaDigital;
 typUnsignedWord gstLiaDigital;
 uint8_t u8LiaAnalogRange;
 uint8_t u8LiaAnalogAvgDepth;

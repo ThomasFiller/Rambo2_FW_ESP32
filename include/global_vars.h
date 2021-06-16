@@ -85,7 +85,7 @@ extern typUnsignedWord	gstTecVoltage;
 
 extern typUnsignedWord	gstLiaVoltage;
 
-extern uint8_t u8TiaDigital;
+extern typUnsignedWord gstTiaDigital;
 extern typUnsignedWord gstLiaDigital;
 extern uint8_t u8LiaAnalogRange;
 extern uint8_t u8LiaAnalogAvgDepth;

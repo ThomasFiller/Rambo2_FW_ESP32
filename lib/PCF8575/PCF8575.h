@@ -142,6 +142,9 @@ public:
 	void SetWritByteBuffered(uint16_t u16writeByteToBuffer);
 	void ModifyBuffer(uint8_t pin, uint8_t value);
 	void SendBufferToI2c();
+	uint16_t digitalReadExpander();
+
+	uint16_t u16ReadByte;
 
 private:
 	uint8_t _address;
