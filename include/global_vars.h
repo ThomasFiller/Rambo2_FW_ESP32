@@ -83,7 +83,7 @@ extern bool bMapc[NO_OF_LASERS + NO_OF_HEATERS];
 extern typUnsignedWord	gstTecTemperature;
 extern typUnsignedWord	gstTecVoltage;
 
-extern typUnsignedWord	gstLiaVoltage;
+extern typSigned32	gstLiaVoltage;
 
 extern typUnsignedWord gstTiaDigital;
 extern typUnsignedWord gstLiaDigital;

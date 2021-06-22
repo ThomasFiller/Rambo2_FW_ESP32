@@ -97,14 +97,14 @@ void SetLaserMode(uint8_t u8Laser, uint8_t u8LaserMode)
 
   if(IC94 == IC_LAS[u8Laser])
   {
-DEBUG("IC94 SetLaserMode(" + (String)u8Laser + ", " + (String)u8LaserMode + "); u8PullEnLas=" + (String)u8PullEnLas + "; u8Prg0Las=" +(String)u8Prg0Las+ "; uIO_PULL_EN_LAS[u8Laser]="+ (String)IO_PULL_EN_LAS[u8Laser]+ "; IO_PRG0_LAS[u8Laser]="+ (String)IO_PRG0_LAS[u8Laser]);
+//DEBUG("IC94 SetLaserMode(" + (String)u8Laser + ", " + (String)u8LaserMode + "); u8PullEnLas=" + (String)u8PullEnLas + "; u8Prg0Las=" +(String)u8Prg0Las+ "; uIO_PULL_EN_LAS[u8Laser]="+ (String)IO_PULL_EN_LAS[u8Laser]+ "; IO_PRG0_LAS[u8Laser]="+ (String)IO_PRG0_LAS[u8Laser]);
     GpioExpanderIc94.ModifyBuffer(IO_PULL_EN_LAS[u8Laser], u8PullEnLas);
     GpioExpanderIc94.ModifyBuffer(IO_PRG0_LAS   [u8Laser], u8Prg0Las);
     GpioExpanderIc94.SendBufferToI2c();
   }
   else
   {
-DEBUG("IC91 SetLaserMode(" + (String)u8Laser + ", " + (String)u8LaserMode + "); u8PullEnLas=" + (String)u8PullEnLas + "; u8Prg0Las=" +(String)u8Prg0Las+ "; uIO_PULL_EN_LAS[u8Laser]="+ (String)IO_PULL_EN_LAS[u8Laser]+ "; IO_PRG0_LAS[u8Laser]="+ (String)IO_PRG0_LAS[u8Laser]);
+//DEBUG("IC91 SetLaserMode(" + (String)u8Laser + ", " + (String)u8LaserMode + "); u8PullEnLas=" + (String)u8PullEnLas + "; u8Prg0Las=" +(String)u8Prg0Las+ "; uIO_PULL_EN_LAS[u8Laser]="+ (String)IO_PULL_EN_LAS[u8Laser]+ "; IO_PRG0_LAS[u8Laser]="+ (String)IO_PRG0_LAS[u8Laser]);
     GpioExpanderIc91.ModifyBuffer(IO_PULL_EN_LAS[u8Laser], u8PullEnLas);
     GpioExpanderIc91.ModifyBuffer(IO_PRG0_LAS   [u8Laser], u8Prg0Las);
     GpioExpanderIc91.SendBufferToI2c();
@@ -113,7 +113,7 @@ DEBUG("IC91 SetLaserMode(" + (String)u8Laser + ", " + (String)u8LaserMode + "); 
 
 void SetLaserDriver300mA(unsigned char ucDriverAddress ,typUnsignedWord uiDriverValue)
 {
-DEBUG("SetLaserDriver300mA(" + (String)ucDriverAddress + (String)uiDriverValue.uiWord + ")" );
+//DEBUG("SetLaserDriver300mA(" + (String)ucDriverAddress + (String)uiDriverValue.uiWord + ")" );
   pinMode(GPIO_SPI_nCS, OUTPUT);
   pinMode(GPIO_SPI_SCK, OUTPUT);
   pinMode(GPIO_SPI_MOSI, OUTPUT_OPEN_DRAIN);
@@ -245,7 +245,7 @@ void ConfigureLiaAdc(uint8_t u8MeasurementRange)
 uint16_t u16MeasurementRange = (((uint16_t) u8MeasurementRange)<<8) & ADS1015_REG_CONFIG_PGA_MASK;
 //DEBUG("u16MeasurementRange= " + (String)u16MeasurementRange + "; ADS1015_REG_CONFIG_PGA_1_024V= " + (String)ADS1015_REG_CONFIG_PGA_1_024V + "; u8LiaAnalogRange= " + (String)u8MeasurementRange );
     #define LIA_ADC_diff       ADS1015_REG_CONFIG_OS_BUSY      |\
-                        ADS1015_REG_CONFIG_MUX_DIFF_0_1 /*hier ist der Kanal*/ |\
+                        ADS1015_REG_CONFIG_MUX_DIFF_0_1 /*hier ist der Kanal (Datenblatt S.24*/ |\
                         u16MeasurementRange  |\
                         ADS1015_REG_CONFIG_MODE_CONTIN  |\
                         ADS1015_REG_CONFIG_DR_3300SPS   |\
@@ -260,24 +260,25 @@ uint16_t u16MeasurementRange = (((uint16_t) u8MeasurementRange)<<8) & ADS1015_RE
 
 void ReadLiaAdc()//ADC 4 channel
 {
-static uint16_t u16BufferADC[16];
+static int16_t i16BufferADC[256];
 static uint8_t u8CntAdcResult = 0;
   if(ValBit(u8AvailableI2c, BIT_LIA_DIGITAL_AVAILABLE))
   {
-    u16BufferADC[u8CntAdcResult] = LiaAdc.ReadConversionReg() >> 4;
+    i16BufferADC[u8CntAdcResult] = LiaAdc.ReadConversionReg();
     u8CntAdcResult++;
-    if(u8CntAdcResult > 15)
+    if(u8CntAdcResult > (u8LiaAnalogAvgDepth))
     {
-//DEBUG("ReadLiaAdc; gstLiaVoltage.uiWord= " + (String)gstLiaVoltage.uiWord + "; u16BufferADC[0]= " + (String)u16BufferADC[0]);
-
-      uint16_t	gstLiaVoltageTmp = 0;
-      for (uint8_t u8CntAccu = 0; u8CntAccu < 16; u8CntAccu++)
+DEBUG("; i16BufferADC[0]= " + (String)i16BufferADC[0]);
+      int32_t	gstLiaVoltageTmp = 0;
+      for (uint8_t u8CntAccu = 0; u8CntAccu < u8LiaAnalogAvgDepth; u8CntAccu++)
       {
-        gstLiaVoltageTmp += u16BufferADC[u8CntAccu];
-        u16BufferADC[u8CntAccu] = 0;
+        gstLiaVoltageTmp += (int32_t)i16BufferADC[u8CntAccu];
+//DEBUG("ReadLiaAdc; gstLiaVoltageTmp= " + (String)gstLiaVoltageTmp + "; i16BufferADC[" + (String)u8CntAccu + "]= " + (String)i16BufferADC[u8CntAccu]);
+        i16BufferADC[u8CntAccu] = 0;
       }
-      gstLiaVoltage.uiWord = gstLiaVoltageTmp;
+      gstLiaVoltage.i32Word = gstLiaVoltageTmp;
       u8CntAdcResult = 0;
+DEBUG("ReadLiaAdc; gstLiaVoltage.i32Word= " + (String)gstLiaVoltage.i32Word + "; u8LiaAnalogAvgDepth=" + (String)u8LiaAnalogAvgDepth);
     }
   }
 }

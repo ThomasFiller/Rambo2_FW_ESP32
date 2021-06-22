@@ -272,9 +272,11 @@ unsigned char pucStringToSend[200];
 
 
     case UART_LIA_SIGNAL:
-      pucStringToSend[1] = 6;//1. Byte: Length of frame (5 bei einem Datenbyte; 6 bei 2 Datenbytes)
+      pucStringToSend[1] = 8;//1. Byte: Length of frame (5 bei einem Datenbyte; 6 bei 2 Datenbytes)
       pucStringToSend[3]= gstLiaVoltage.stBytes.ucHighByte;//3. Byte -> 1.Datenbyte
-      pucStringToSend[4]= gstLiaVoltage.stBytes.ucLowByte;//4. Byte -> 2.Datenbyte
+      pucStringToSend[4]= gstLiaVoltage.stBytes.ucMedHighByte;//4. Byte -> 2.Datenbyte
+      pucStringToSend[5]= gstLiaVoltage.stBytes.ucMedLowByte;//3. Byte -> 1.Datenbyte
+      pucStringToSend[6]= gstLiaVoltage.stBytes.ucLowByte;//4. Byte -> 2.Datenbyte
 //DEBUG("UART_LIA_SIGNAL -> PC ");
       break;
     case UART_LIA_DIGITAL:
@@ -283,6 +285,18 @@ unsigned char pucStringToSend[200];
       pucStringToSend[3]= gstLiaDigital.stBytes.ucHighByte ;//3. Byte -> 1.Datenbyte
       pucStringToSend[4]= gstLiaDigital.stBytes.ucLowByte ;//4. Byte -> 2.Datenbyte
 DEBUG("UART_LIA_DIGITAL -> PC pucStringToSend= " + (String)gstLiaDigital.uiWord);
+      break;
+
+    case UART_LIA_MEASURING_RANGE:
+      pucStringToSend[1] = 5;//1. Byte: Length of frame (5 bei einem Datenbyte; 6 bei 2 Datenbytes)
+      pucStringToSend[3]= u8LiaAnalogRange;//3. Byte -> 1.Datenbyte
+DEBUG("UART_LIA_MEASURING_RANGE -> PC u8LiaAnalogRange= " + (String)u8LiaAnalogRange);
+      break;
+
+    case UART_LIA_FILTER_DEPTH:
+      pucStringToSend[1] = 5;//1. Byte: Length of frame (5 bei einem Datenbyte; 6 bei 2 Datenbytes)
+      pucStringToSend[3]= u8LiaAnalogAvgDepth;//3. Byte -> 1.Datenbyte
+DEBUG("UART_LIA_FILTER_DEPTH -> PC u8LiaAnalogAvgDepth= " + (String)u8LiaAnalogAvgDepth);
       break;
 
     case UART_TIA:
@@ -472,6 +486,21 @@ DEBUG("Sende an LIA ");
       }
 DEBUG("UART_LIA_DIGITAL <- PC; gstLiaDigital= " + (String)gstLiaDigital.uiWord + "; u8AvailableI2c= " + (String)u8AvailableI2c );
       break;
+
+    case UART_LIA_MEASURING_RANGE:
+      u8LiaAnalogRange = pucData[0]; 
+      if(ValBit(u8AvailableI2c, BIT_LIA_DIGITAL_AVAILABLE))
+      {
+DEBUG("UART_LIA_MEASURING_RANGE <- PC; u8LiaAnalogRange= " + (String)u8LiaAnalogRange);
+        ConfigureLiaAdc(u8LiaAnalogRange);
+      }
+      break;
+
+    case UART_LIA_FILTER_DEPTH:
+      u8LiaAnalogAvgDepth = pucData[0]; 
+DEBUG("UART_LIA_FILTER_DEPTH <- PC; u8LiaAnalogAvgDepth= " + (String)u8LiaAnalogAvgDepth);
+      break;
+
     case UART_TIA:
       gstTiaDigital.stBytes.ucLowByte = pucData[0];
       gstTiaDigital.stBytes.ucHighByte = 0;

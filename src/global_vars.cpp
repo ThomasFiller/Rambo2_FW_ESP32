@@ -64,7 +64,7 @@ uint8_t u8AvailableI2c = 0;
 typUnsignedWord	gstTecTemperature;
 typUnsignedWord	gstTecVoltage;
 
-typUnsignedWord	gstLiaVoltage;
+typSigned32	gstLiaVoltage;
 
 typUnsignedWord gstAvailableIchtp;
 typUnsignedWord	gstDAC[NO_OF_DACS];
@@ -82,7 +82,7 @@ typUnsignedWord gstTec5V;
 
 typUnsignedWord gstTiaDigital;
 typUnsignedWord gstLiaDigital;
-uint8_t u8LiaAnalogRange;
+uint8_t u8LiaAnalogRange = (ADS1015_REG_CONFIG_PGA_1_024V >> 8);
 uint8_t u8LiaAnalogAvgDepth;
 
 uint8_t DataDirection;

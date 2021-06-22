@@ -236,6 +236,9 @@ TEC-CTL.SchDoc (zweiter TEC-Controller für SHG)
 //Lock-In-Amplifier						
 #define	UART_LIA_DIGITAL	  0x41	//	2	3	Schreiben: Byte1->Pin10..17; Byte2->Pin18..25 |  Lesen Byte1,2 wie Schreiben, Byte3->Pin6..7
 #define	UART_LIA_SIGNAL	    0x42	//	0	2	Messwert des ADC auf dem InterBoard
+#define	UART_LIA_MEASURING_RANGE	0x43	//	1	1	Messbereich 0000 : FSR = ±6.144 V; 0010 : FSR = ±4.096 V; 0100 : FSR = ±2.048 V; 0110 : FSR = ±1.024 V; 1000 : FSR = ±0.512 V; 1010 : FSR = ±0.256 V; 1100 : FSR = ±0.256 V; 1110 : FSR = ±0.256 V
+#define	UART_LIA_FILTER_DEPTH	0x44	//	1	1	
+
 //TransImpedance-Amplifier						
 #define	UART_TIA	          0x40	//	1	1	bit 0..7 -> Pin5, Pin10, Pin11, Pin12, Pin13, Pin14
 
@@ -451,6 +454,20 @@ typedef union
 	int16_t	iWord;
 	typDoubleByte	stBytes;
 } typSignedWord;
+
+typedef struct
+{
+	uint8_t	ucLowByte;
+	uint8_t	ucMedLowByte;
+	uint8_t	ucMedHighByte;
+	uint8_t	ucHighByte;
+} typQuadByte;
+
+typedef union
+{
+	int32_t	i32Word;
+	typQuadByte	stBytes;
+} typSigned32;
 
 //****************************************************************************************************
 
