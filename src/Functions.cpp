@@ -72,7 +72,7 @@ void InitExternTrigger(uint8_t u8TriggerFunction)
 
 void CycleTimer_Task(void * pvParameters)
 {
-//DEBUG_F("Running on core " + (String) xPortGetCoreID());
+DEBUG("Running on core " + (String) xPortGetCoreID());
  static unsigned char ucCntBlinkLed=0;
   while(true)
   {
@@ -268,7 +268,7 @@ static uint8_t u8CntAdcResult = 0;
     u8CntAdcResult++;
     if(u8CntAdcResult > (u8LiaAnalogAvgDepth))
     {
-DEBUG("; i16BufferADC[0]= " + (String)i16BufferADC[0]);
+//DEBUG("; i16BufferADC[0]= " + (String)i16BufferADC[0]);
       int32_t	gstLiaVoltageTmp = 0;
       for (uint8_t u8CntAccu = 0; u8CntAccu < u8LiaAnalogAvgDepth; u8CntAccu++)
       {
@@ -278,7 +278,7 @@ DEBUG("; i16BufferADC[0]= " + (String)i16BufferADC[0]);
       }
       gstLiaVoltage.i32Word = gstLiaVoltageTmp;
       u8CntAdcResult = 0;
-DEBUG("ReadLiaAdc; gstLiaVoltage.i32Word= " + (String)gstLiaVoltage.i32Word + "; u8LiaAnalogAvgDepth=" + (String)u8LiaAnalogAvgDepth);
+//DEBUG("ReadLiaAdc; gstLiaVoltage.i32Word= " + (String)gstLiaVoltage.i32Word + "; u8LiaAnalogAvgDepth=" + (String)u8LiaAnalogAvgDepth);
     }
   }
 }

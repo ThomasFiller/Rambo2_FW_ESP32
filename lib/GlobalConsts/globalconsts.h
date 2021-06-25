@@ -240,7 +240,7 @@ TEC-CTL.SchDoc (zweiter TEC-Controller für SHG)
 #define	UART_LIA_FILTER_DEPTH	0x44	//	1	1	
 
 //TransImpedance-Amplifier						
-#define	UART_TIA	          0x40	//	1	1	bit 0..7 -> Pin5, Pin10, Pin11, Pin12, Pin13, Pin14
+#define	UART_TIA	          0x40	//	2 2 	bit 0..7 -> Pin5, Pin10, Pin11, Pin12, Pin13, Pin14; bit14, bit15 -> LIA-Pins 6 und 7
 
 
 //*******************************ERROR-Codes

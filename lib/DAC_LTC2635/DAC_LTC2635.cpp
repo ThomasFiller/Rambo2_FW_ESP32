@@ -54,6 +54,6 @@ void LTC2635::SetDac(uint8_t ucDacAddress , uint16_t ui16DacValue)
   u8Error = Wire.endTransmission();                     // Relinquish bus control 
   if(u8Error) 
   {
-DEBUG_F("Fehler beim DAC-Schreiben:"+(String)(u8Error)+ ";   I2C_ERROR_ACK= " + (String)I2C_ERROR_ACK);
+DEBUG("Fehler beim DAC-Schreiben:"+(String)(u8Error)+ ";   I2C_ERROR_ACK= " + (String)I2C_ERROR_ACK);
   }
 }

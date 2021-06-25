@@ -44,11 +44,11 @@ ConfigureLiaAdc(u8LiaAnalogRange);
     if (LaserDriver[u8LasNo].Configure(I2C_LAS_ADDRESS[u8LasNo],I2C_LAS_CHANNEL[u8LasNo])==0) 
     {
       gstAvailableIchtp.uiWord |= (uint16_t)((uint16_t)1<<(uint8_t)(u8LasNo));   
-//DEBUG("LaserDriver[" + (String)u8LasNo + "] ist vorhanden" );
+DEBUG("LaserDriver[" + (String)u8LasNo + "] ist vorhanden" );
     }
     else
     {
-//DEBUG("LaserDriver[" + (String)u8LasNo + "] ist NICHT vorhanden" );
+DEBUG("LaserDriver[" + (String)u8LasNo + "] ist NICHT vorhanden" );
     }
   }
   guiCurrentADChannel = 0;
@@ -65,7 +65,9 @@ unsigned char uiCntTecVolt = 0;
 #define PERIOD_TO_ADC 5 //5 entspricht 25ms pro Zyklus, nach 6 Zyklen ist Abfrage aller ADC fertig; Jede AD-Abfrage dauert max 16ms
 static uint8_t u8CntToAdc = 0;
 delay(1);
-
+//static uint8_t uiLoesch;
+//uiLoesch++;
+//DEBUG("läuft; uiLoesch=" + (String)uiLoesch);
   if (Serial.available())
     {
       UartReceiveOrTransmit();

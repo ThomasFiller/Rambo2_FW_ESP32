@@ -302,8 +302,9 @@ DEBUG("UART_LIA_FILTER_DEPTH -> PC u8LiaAnalogAvgDepth= " + (String)u8LiaAnalogA
     case UART_TIA:
       pucStringToSend[1] = 6;//1. Byte: Length of frame (5 bei einem Datenbyte; 6 bei 2 Datenbytes)
       gstTiaDigital.uiWord = GpioExpanderTia.digitalReadExpander();
-      pucStringToSend[3]= gstTiaDigital.stBytes.ucLowByte ;//4. Byte -> 2.Datenbyte
-DEBUG("UART_TIA -> PC pucStringToSend[3]= " + (String)(pucStringToSend[3]));
+      pucStringToSend[3]= gstTiaDigital.stBytes.ucHighByte ;//4. Byte -> 2.Datenbyte
+      pucStringToSend[4]= gstTiaDigital.stBytes.ucLowByte ;//4. Byte -> 2.Datenbyte
+DEBUG("UART_TIA -> PC pucStringToSend= " + (String)(gstTiaDigital.uiWord));
       break;
       
     default:
@@ -502,8 +503,8 @@ DEBUG("UART_LIA_FILTER_DEPTH <- PC; u8LiaAnalogAvgDepth= " + (String)u8LiaAnalog
       break;
 
     case UART_TIA:
-      gstTiaDigital.stBytes.ucLowByte = pucData[0];
-      gstTiaDigital.stBytes.ucHighByte = 0;
+      gstTiaDigital.stBytes.ucLowByte = pucData[1];
+      gstTiaDigital.stBytes.ucHighByte = pucData[0];      
       if(ValBit(u8AvailableI2c, BIT_TIA_AVAILABLE))
       {
 DEBUG("Sende an TIA ");
