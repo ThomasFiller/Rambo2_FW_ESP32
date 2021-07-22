@@ -301,34 +301,34 @@ TEC-CTL.SchDoc (zweiter TEC-Controller für SHG)
 #define IO_EN_LASER_PWR_LO P4
 
   //IC94
-#define IO_PULL_EN_LAS0  P8//Pull up oder pull down der Laserausgänge
-#define IO_PULL_EN_LAS1  P9
-#define IO_PULL_EN_LAS2  P10
-#define IO_PULL_EN_LAS3  P11
-#define IO_PULL_EN_LAS4  P12
-#define IO_PULL_EN_LAS5  P13
-#define IO_PULL_EN_LAS6  P14
-#define IO_PULL_EN_LAS7  P15
+#define IO_PULL_EN_LAS1  P8//Pull up oder pull down der Laserausgänge
+#define IO_PULL_EN_LAS0  P9
+#define IO_PULL_EN_LAS3  P10
+#define IO_PULL_EN_LAS2  P11
+#define IO_PULL_EN_LAS5  P12
+#define IO_PULL_EN_LAS4  P13
+#define IO_PULL_EN_LAS7  P14
+#define IO_PULL_EN_LAS6  P15
   //IC91
-#define IO_PULL_EN_LAS8  P11
-#define IO_PULL_EN_LAS9  P10
-#define IO_PULL_EN_LAS10  P9
-#define IO_PULL_EN_LAS11  P8
+#define IO_PULL_EN_LAS9  P11
+#define IO_PULL_EN_LAS8  P10
+#define IO_PULL_EN_LAS11  P9
+#define IO_PULL_EN_LAS10  P8
 
   //IC94
-#define IO_PRG0_LAS0  P0
-#define IO_PRG0_LAS1  P1
-#define IO_PRG0_LAS2  P2
-#define IO_PRG0_LAS3  P3
-#define IO_PRG0_LAS4  P4
-#define IO_PRG0_LAS5  P5
-#define IO_PRG0_LAS6  P6
-#define IO_PRG0_LAS7  P7
+#define IO_PRG0_LAS1  P0
+#define IO_PRG0_LAS0  P1
+#define IO_PRG0_LAS3  P2
+#define IO_PRG0_LAS2  P3
+#define IO_PRG0_LAS5  P4
+#define IO_PRG0_LAS4  P5
+#define IO_PRG0_LAS7  P6
+#define IO_PRG0_LAS6  P7
   //IC91
-#define IO_PRG0_LAS8   P3
-#define IO_PRG0_LAS9   P2
-#define IO_PRG0_LAS10  P1
-#define IO_PRG0_LAS11  P0
+#define IO_PRG0_LAS9   P3
+#define IO_PRG0_LAS8   P2
+#define IO_PRG0_LAS11  P1
+#define IO_PRG0_LAS10  P0
 
 #define IC94 0
 #define IC91 1

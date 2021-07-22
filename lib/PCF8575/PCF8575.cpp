@@ -169,9 +169,6 @@ uint8_t u8Error = 0;
 		_wire->begin();
 	#endif
 
-//		Serial.println( writeMode, BIN);
-//		Serial.println( readMode, BIN);
-
 	// Check if there are pins to set low
 	if (writeMode>0 || readMode>0)
 	{
@@ -222,25 +219,13 @@ void PCF8575::pinMode(uint8_t pin, uint8_t mode){
 	if (mode == OUTPUT){
 		writeMode = writeMode | bit(pin);
 		readMode =  readMode & ~bit(pin);
-//		DEBUG_PRINT("writeMode: ");
-//		DEBUG_PRINT(writeMode, BIN);
-//		DEBUG_PRINT("readMode: ");
-//		DEBUG_PRINTLN(readMode, BIN);
-
 	}else if (mode == INPUT){
 		writeMode = writeMode & ~bit(pin);
 		readMode =   readMode | bit(pin);
-//		DEBUG_PRINT("writeMode: ");
-//		DEBUG_PRINT(writeMode, BIN);
-//		DEBUG_PRINT("readMode: ");
-//		DEBUG_PRINTLN(readMode, BIN);
 	}
 	else{
 		DEBUG_PRINTLN("Mode non supported by PCF8575")
 	}
-//	DEBUG_PRINT("Write mode: ");
-//	DEBUG_PRINTLN(writeMode, BIN);
-
 };
 
 /**
@@ -457,7 +442,7 @@ void PCF8575::digitalWriteExpander(uint8_t pin, uint8_t value)
 
 void PCF8575::SetWritByteBuffered(uint16_t u16writeByteToBuffer)
 {
-	u16writeByteBuffered = u16writeByteToBuffer & writeMode;
+	u16writeByteBuffered = (u16writeByteToBuffer & writeMode) | readMode;
 }
 
 void PCF8575::ModifyBuffer(uint8_t pin, uint8_t value)
@@ -475,7 +460,7 @@ void PCF8575::ModifyBuffer(uint8_t pin, uint8_t value)
 	//DEBUG_PRINT(bit(pin), BIN);
 	//DEBUG_PRINT(" value ");
 	//DEBUG_PRINTLN(value);
-	u16writeByteBuffered = u16writeByteBuffered & writeMode;
+	u16writeByteBuffered = (u16writeByteBuffered & writeMode) | readMode;
 }
 
 void PCF8575::SendBufferToI2c()
