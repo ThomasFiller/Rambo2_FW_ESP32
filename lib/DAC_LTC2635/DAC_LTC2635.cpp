@@ -19,7 +19,7 @@ void LTC2635::Configure()
   SwitchToI2cChan(u8Channel);
 	Wire.begin(); // Join I2C bus
 
-//DEBUG("ConfigureDac(); u8Channel=" + (String)u8Channel);
+DEBUG("ConfigureDac(); u8Channel=" + (String)u8Channel);
   Wire.beginTransmission(_addr);    // Open Device
   //Wire.write(0x66);  //Select Internal Reference (Power Up Reference)
   Wire.write(0x77);  //Select External Reference (Power Down Internal Reference)

@@ -8,10 +8,7 @@
 #include "Adafruit_ADS1015.h"
 #include "globalconsts.h"
 
-  uint8_t u8Channel;							//I2C-Kanal, an den das iC-Htp angeschlossen ist
-
-
-void SwitchToI2cChan() //Schaltet auf einen der 3 I2C-Kan�le durch Multiplexen des SCL-Signals
+void Adafruit_ADS1015::SwitchToI2cChan() //Schaltet auf einen der 3 I2C-Kan�le durch Multiplexen des SCL-Signals
 {
   if(ValBit(u8Channel, 0)) digitalWrite(GPIO_SELECT_I2C_2, HIGH); 	else digitalWrite(GPIO_SELECT_I2C_2, LOW);
   if(ValBit(u8Channel, 1)) digitalWrite(GPIO_SELECT_I2C, HIGH); 	else digitalWrite(GPIO_SELECT_I2C, LOW);
@@ -55,13 +52,17 @@ static void i2cwrite(uint8_t x) {
     @param value value to write to register
 */
 /**************************************************************************/
-static void writeRegister(uint8_t i2cAddress, uint8_t reg, uint16_t value) {
+uint8_t Adafruit_ADS1015::writeRegister(uint8_t i2cAddress, uint8_t reg, uint16_t value) 
+{
+uint8_t u8Error;
   SwitchToI2cChan();
   Wire.beginTransmission(i2cAddress);
   i2cwrite((uint8_t)reg);
   i2cwrite((uint8_t)(value >> 8));
   i2cwrite((uint8_t)(value & 0xFF));
-  Wire.endTransmission();
+  u8Error = Wire.endTransmission();
+//DEBUG("u8Error @ i2cAddress " + (String)i2cAddress + " = " + (String)u8Error + "; u8Channel=" + (String)u8Channel);
+  return u8Error;
 }
 
 /**************************************************************************/
@@ -74,7 +75,8 @@ static void writeRegister(uint8_t i2cAddress, uint8_t reg, uint16_t value) {
     @return 16 bit register value read
 */
 /**************************************************************************/
-static uint16_t readRegister(uint8_t i2cAddress, uint8_t reg) {
+uint16_t Adafruit_ADS1015::readRegister(uint8_t i2cAddress, uint8_t reg) 
+{
   SwitchToI2cChan();
   Wire.beginTransmission(i2cAddress);
   i2cwrite(reg);
@@ -148,9 +150,9 @@ adsGain_t Adafruit_ADS1015::getGain() { return m_gain; }
     @return nichts
 */
 /**************************************************************************/
-void Adafruit_ADS1015::WritConfigReg(uint16_t value)
+uint8_t Adafruit_ADS1015::WritConfigReg(uint16_t value)
 {
-  writeRegister(m_i2cAddress, ADS1015_REG_POINTER_CONFIG, value);
+  return writeRegister(m_i2cAddress, ADS1015_REG_POINTER_CONFIG, value);
 }
 
 

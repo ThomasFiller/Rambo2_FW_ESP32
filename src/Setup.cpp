@@ -276,7 +276,9 @@ void GPIO_Setup()
 
 //*****************************TIA / LIA
   for (uint8_t u8CntTia = 0; u8CntTia < 5; u8CntTia++) GpioExpanderTia.pinMode(u8CntTia, OUTPUT);
-  GpioExpanderTia.pinMode(5, INPUT);
+  GpioExpanderTia.pinMode(5, INPUT);  //input TIA Pin5
+  GpioExpanderTia.pinMode(14, INPUT); //input LIA Pin6
+  GpioExpanderTia.pinMode(15, INPUT); //input LIA Pin7
 
   for (uint8_t u8CntLia = 0; u8CntLia < 16; u8CntLia++) GpioExpanderLia.pinMode(u8CntLia, OUTPUT);
   

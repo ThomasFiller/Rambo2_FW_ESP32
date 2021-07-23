@@ -141,6 +141,7 @@ protected:
   uint8_t m_conversionDelay; ///< conversion deay
   uint8_t m_bitShift;        ///< bit shift amount
   adsGain_t m_gain;          ///< ADC gain
+  uint8_t u8Channel;							//I2C-Kanal, an den das iC-Htp angeschlossen ist
 
 public:
   Adafruit_ADS1015(uint8_t i2cAddress, uint8_t u8I2cChannel);
@@ -153,10 +154,13 @@ public:
   void setGain(adsGain_t gain);
   adsGain_t getGain(void);
   
-  void WritConfigReg(uint16_t value);
+  uint8_t WritConfigReg(uint16_t value);
   uint16_t ReadConversionReg();
 
 private:
+  void SwitchToI2cChan();
+  uint8_t writeRegister(uint8_t i2cAddress, uint8_t reg, uint16_t value) ;
+  uint16_t readRegister(uint8_t i2cAddress, uint8_t reg);
 };
 
 /**************************************************************************/

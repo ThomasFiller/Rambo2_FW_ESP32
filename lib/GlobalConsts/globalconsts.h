@@ -84,10 +84,8 @@ TEC-CTL.SchDoc (zweiter TEC-Controller für SHG)
          IC3    DAC LTC2635             SCL2    0010 000X =  0x20 (XXX00XX, S.22)      Pins 9,7,4 -> GND*/
 
 #define I2C_ADDRESS_TEMP_HUM_SENSOR     0x40
-#define I2C_ADDRESS_DAC1                0x72
-#define I2C_ADDRESS_DAC2                0x10
-#define I2C_ADDRESS_ADC1                0x48//1001000
-#define I2C_ADDRESS_ADC2                0x49//1001001
+#define I2C_ADDRESS_DAC_TEC             0x72
+#define I2C_ADDRESS_ADC_TEC             0x48//1001000
 #define I2C_ADDRESS_LAS_DRV_A           0x41       
 #define I2C_ADDRESS_LAS_DRV_B           0x43
 #define I2C_ADDRESS_LAS_DRV_C           0x43
@@ -117,8 +115,11 @@ TEC-CTL.SchDoc (zweiter TEC-Controller für SHG)
 #define I2C_CHAN_LAS_DRV_E      SCL1
 #define I2C_CHAN_HEAT_DRV_0     SCL3
 
-#define I2C_CHAN_DAC            SCL2
-#define I2C_CHAN_ADC            SCL2
+#define I2C_CHAN_DAC_TEC        SCL2
+#define I2C_CHAN_ADC_TEC        SCL2
+
+#define I2C_CHAN_TEMP_HUM_SENSOR SCL1
+#define I2C_CHAN_INTER_BOARD    SCL1
 
 //******************************SPI-Adressen
 #define SPI_ADDRESS_LAS_DRV_10     0x1//0x0
